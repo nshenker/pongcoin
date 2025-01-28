@@ -107,8 +107,8 @@ button{
     border: none;
     font-weight: 900;
     font-size: 20px;
-    color: #e5e7eb;
-    background-color: #156579;
+    color: #156579;
+    background-color: #e5e7eb;
     cursor: pointer;
     transition: 0.5s ease;
     transform-origin: center;
