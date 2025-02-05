@@ -54,7 +54,7 @@ const BottomSection = () => {
           />
           <Box
             sx={{
-              "& button": {
+              "& a": {
                 fontFamily: `${Press_Start_2P_font.style.fontFamily}`,
                 color: "#fff",
                 background: "#E25822",
@@ -75,7 +75,7 @@ const BottomSection = () => {
                 background: "#000",
                 transition: "0.5s all",
                 "&:hover": {
-                  "& button": {
+                  "& a": {
                     top: "0",
                     right: "0",
                     background: "#E25822",
@@ -107,14 +107,12 @@ const BottomSection = () => {
               }}
             >
               <Box className="btn_wrap">
-                <Button>Twitter</Button>
+                <Button href={'https://www.x.com/thepongcoin'}  target="_blank"> Twitter</Button>
               </Box>
-              <Box className="btn_wrap">
-                <Button>Telegram</Button>
+              <Box className="btn_wrap" >
+                <Button href={'https://t.me/pingandpongofficial'} target="_blank">Telegram</Button>
               </Box>
-              <Box className="btn_wrap">
-                <Button>Discord</Button>
-              </Box>
+              
             </Box>
           </Box>
           <Typography
@@ -162,7 +160,7 @@ const BottomSection = () => {
           }}
         >
           <Typography>© 2025 Pong Coin – All rights reserved.</Typography>
-          <Typography>Terms & Conditions | Privacy Policy</Typography>
+          {/* <Typography>Terms & Conditions | Privacy Policy</Typography> */}
         </Box>
       </Box>
     </>

@@ -24,23 +24,26 @@ const tokenomicData = [
     marginLeft:"0rem"
   },
   {
-    title: "Burn Mechanism",
-    subtitle: "(20%) – Reducing supply to increase value.",
+    title: "TBA",
+    subtitle: "To be announced...",
+
     marginLeft:"3rem"
   },
   {
-    title: "Community & Airdrops",
-    subtitle: "(25%) – Rewarding early supporters & active holders.",
+    title: "TBA",
+    subtitle: "To be announced...",
+
     marginLeft:"6rem"
   },
   {
-    title: "Development & Marketing",
-    subtitle: "(30%) – Ensuring long-term project growth.",
+    title: "TBA",
+    subtitle: "To be announced...",
     marginLeft:"3rem"
   },
   {
-    title: "Liquidity & Exchanges",
-    subtitle: "(25%) – Securing smooth trading experience.",
+    title: "TBA",
+    subtitle: "To be announced...",
+
     marginLeft:"0rem"
   },
 ];
@@ -161,6 +164,8 @@ const Tokenomics = () => {
                   >
                     {e.title}
                   </Typography>
+                  {
+                    e.subtitle != "" &&
                   <Typography
                     sx={{
                     //   pt:"0.3rem",
@@ -171,6 +176,8 @@ const Tokenomics = () => {
                   >
                     {e.subtitle}
                   </Typography>
+                  }
+
                 </Box>
               </Box>
             ))}

@@ -182,7 +182,7 @@ const TopSection = () => {
                         transition: "0.5s all",
                         "&:hover": {
                           border: "1px solid transparent",
-                          "& button": {
+                          "& a": {
                             top: "0",
                             right: "0",
                             background: "#E25822",
@@ -211,6 +211,8 @@ const TopSection = () => {
                             animation: "none",
                           },
                         }}
+                        href="https://raydium.io/swap/?inputMint=sol&outputMint=5t8LShVXF9orE62UZQbBokWQFEpnzQMnTFY8snZsnp5o"
+                        target="_blank"
                       >
                         Buy Pong
                       </Button>
@@ -246,7 +248,18 @@ const TopSection = () => {
                   >
                     Join the squad and let’s make memes move!
                   </Typography>
-                  <Box className="btn_wrap">
+                  <Box className="btn_wrap" 
+                    sx={{
+                      "&:hover": {
+                          border: "1px solid transparent",
+                          "& a": {
+                            top: "0",
+                            right: "0",
+                            background: "#E25822",
+                          },
+                        },
+                    }}
+                  >
                     <Button
                       sx={{
                         fontFamily: `${pressStart2PFont.style.fontFamily} !important`,
@@ -265,6 +278,7 @@ const TopSection = () => {
                         right: "-3px",
                         transition: "0.5s all",
                       }}
+                      href={'https://t.me/pingandpongofficial'} target="_blank"
                     >
                       Join now
                     </Button>
