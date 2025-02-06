@@ -161,10 +161,10 @@ const Header = () => {
             <Button component={Link} href="/">Home</Button>
             </Box>
             <Box className="btn_wrap">
-              <Button>Tokenomics</Button>
+              <Button component={Link} href="/#tokenomics">Tokenomics</Button>
             </Box>
             <Box className="btn_wrap">
-              <Button>Roadmap</Button>
+              <Button component={Link} href="/#roadmap">Roadmap</Button>
             </Box>
             <Box className="btn_wrap">
                 <Button component={Link} href="/play">

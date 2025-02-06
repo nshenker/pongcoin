@@ -50,7 +50,8 @@ const tokenomicData = [
 
 const Tokenomics = () => {
   return (
-    <Box
+    <Box 
+    id="tokenomics"
       sx={{
         px: { lg: "5rem", xs: "1.5rem" },
         py: "1rem",
