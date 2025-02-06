@@ -1,5 +1,4 @@
-"use client";
-import Footer from '@/components/Footer';
+"use client"; 
 import Header from '@/components/Header'
 import { Box, Typography } from '@mui/material'
 import { IBM_Plex_Mono, Press_Start_2P , VT323} from 'next/font/google';
