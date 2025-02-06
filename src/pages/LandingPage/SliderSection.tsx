@@ -44,6 +44,7 @@ const SliderSection = () => {
           pt: "2rem",
           pb: "4rem",
         }}
+        id="roadmap"
       >
         <Typography
           sx={{
