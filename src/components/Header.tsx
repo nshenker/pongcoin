@@ -13,6 +13,8 @@ import WalletConnectButton from "./WalletConnectButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { getTokenBalance } from "@/utils/callFucntions";
 import wallet_avatar from "@/assets/wallet_avatar.svg"
+import Link from "next/link";
+
 // Font configurations
 const courierPrimeFont = Courier_Prime({
   variable: "--font-Courier_Prime-sans",
@@ -105,7 +107,7 @@ const Header = () => {
             gap: "1rem",
             justifyContent: { sm: "space-between", xs: "center" },
             flexWrap: "wrap",
-            "& button": {
+            "& a , button": {
               fontFamily: courierPrimeFont.style.fontFamily,
               textTransform: "capitalize",
               fontSize: "16px",
@@ -126,7 +128,7 @@ const Header = () => {
               background: "#000",
               transition: "0.5s all",
               "&:hover": {
-                "& button": {
+                "& a, button": {
                   top: "0",
                   right: "0",
                   background: "#E25822",
@@ -137,7 +139,7 @@ const Header = () => {
               background: "#000",
               transition: "0.5s all",
               "&:hover": {
-                "& button": {
+                "& a, button": {
                   top: "0",
                   right: "0",
                   background: "#FAF3E0",
@@ -156,7 +158,7 @@ const Header = () => {
             }}
           >
             <Box className="btn_wrap">
-              <Button>Home</Button>
+            <Button component={Link} href="/">Home</Button>
             </Box>
             <Box className="btn_wrap">
               <Button>Tokenomics</Button>
@@ -164,6 +166,11 @@ const Header = () => {
             <Box className="btn_wrap">
               <Button>Roadmap</Button>
             </Box>
+            <Box className="btn_wrap">
+                <Button component={Link} href="/play">
+                  Play
+                </Button>
+              </Box>
           </Box>
 
           {/* Right Section */}
