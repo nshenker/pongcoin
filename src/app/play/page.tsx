@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import { Box, Button, Typography } from "@mui/material";
 import { IBM_Plex_Mono, Press_Start_2P, VT323 } from "next/font/google";
 import launch from "../../assets/launch.gif";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/logo.png";
 import BottomSection from "@/pages/LandingPage/BottomSection";
 import PongComponent from "./PongComponent";
@@ -28,16 +28,43 @@ const IBM_Plex_Mono_Font = IBM_Plex_Mono({
 });
 const page = () => {
   const [showGame, setShowGame] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null); // Explicitly set ref type
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (showGame) {
+      setIsPlaying(true)
       const handleKeyDown = (event: { preventDefault: () => void }) => {
         event.preventDefault();
       };
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
     }
+
   }, [showGame]);
+
+   const togglePlay = () => {
+    if (audioRef.current) {
+        if (isPlaying) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+        
+      }
+     
+    }
+  }
+ 
+
+  const goBack = () => {
+    setShowGame(false);
+    setIsPlaying(false)
+  }
+
+  useEffect(() => {
+    togglePlay()
+  },[isPlaying])
+
 
   return (
     <Box>
@@ -98,14 +125,32 @@ const page = () => {
         >
           <Box display={"flex"} my={"1rem"}>
             <Box className="btn_wrap">
-              <Button onClick={() => setShowGame(false)}>Back</Button>
+              <Button onClick={() => goBack()}>Back</Button>
+           
+
             </Box>
+
+            <Box sx={{ml: "10px" }} className="btn_wrap" onClick={() => setIsPlaying(!isPlaying)}>
+            <Button sx={{width: "50px"}}>
+              {
+                isPlaying ?
+                <>
+               Mute  </>
+
+:
+<> Unmute </>
+
+              }
+              </Button>
+</Box>
           </Box>
           <PongComponent cpuMode={true} />
+
         </Box>
       )}
+      <audio ref={audioRef} src={"/game-sound.mp3"} />
 
-      <BottomSection />
+      <BottomSection  />
     </Box>
   );
 };
