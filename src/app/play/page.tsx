@@ -3,9 +3,11 @@ import Header from '@/components/Header'
 import { Box, Typography } from '@mui/material'
 import { IBM_Plex_Mono, Press_Start_2P , VT323} from 'next/font/google';
 import launch from "../../assets/launch.gif"
-import React from 'react'
+import React, { useEffect } from 'react'
 import logo from "../../assets/logo.png";
 import BottomSection from '@/pages/LandingPage/BottomSection';
+import PongComponent from './PongComponent';
+import PongGame from './PongGame';
  
 const vt323Font = VT323({
   variable: "--font-VT323-sans",
@@ -25,6 +27,18 @@ const IBM_Plex_Mono_Font = IBM_Plex_Mono({
   weight: "400",
 });
 const page = () => {
+
+
+
+  useEffect(() => {
+    const handleKeyDown = (event: { preventDefault: () => void; }) => {
+      event.preventDefault();
+      
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <Box>
        <Box textAlign={"center"}>
@@ -40,9 +54,11 @@ const page = () => {
           </Typography>
         </Box>
         <Header />
+          {/*
       <Box sx={{
         py:{sm:"8rem",xs:"4rem"}
       }}>
+        
       <Typography
               sx={{
                 fontSize: {sm:"34px",xs:"28px"},
@@ -63,7 +79,7 @@ const page = () => {
             }}
           />
             </Typography>
-        <Typography
+       <Typography
               sx={{
                 p:"15px",
                 fontSize: "16px",
@@ -72,8 +88,15 @@ const page = () => {
               }}
             >
               {"We're building something fun! Stay tuned for the ultimate $PONG experience."}
-            </Typography>
+            </Typography> 
       </Box>
+*/}
+ <Box sx={{width: "80%", margin: "0 auto"}} >
+    <PongComponent cpuMode={true}/>
+    
+      {/* <PongGame /> */}
+</Box>
+
         <BottomSection />
     </Box>
   )

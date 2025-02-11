@@ -24,6 +24,7 @@
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-p5": "^1.4.1",
     "swiper": "^10.0.0",
     "tailwind-merge": "^3.0.1"
   },
