@@ -372,7 +372,7 @@ export class PongComponent extends React.Component<PongProps, PongState> {
   render() {
     return (this.state.goToMenu ? <></> : (
       this.state.finished ? <div>{this.cpuMode ? <>You won</> : <>Yu lost</>}</div> :
-      <Sketch  setup={this.setup} draw={this.draw} keyPressed={this.keyPressed} touchStarted={this.cpuMode ? this.touchStartedSinglePlayer : this.touchStartedTwoPlayers} />
+      <Sketch  setup={this.setup} draw={this.draw} style={{width:"100%"}} keyPressed={this.keyPressed} touchStarted={this.cpuMode ? this.touchStartedSinglePlayer : this.touchStartedTwoPlayers} />
     ));   
   };
 };
