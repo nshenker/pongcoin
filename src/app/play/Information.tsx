@@ -9,6 +9,7 @@ import info_bg from "../../assets/info_bg.png";
 import info_icon from "../../assets/info_icon.svg";
 import left_arrow from "../../assets/left_arrow.svg";
 import right_arrow from "../../assets/right_arrow.svg";
+import NorthIcon from '@mui/icons-material/North';
 
 const vt323Font = VT323({
   variable: "--font-VT323-sans",
@@ -210,6 +211,9 @@ interface InformationProps {
                   component={"img"}
                   src={left_arrow.src}
                   px={"1rem"}
+                  sx={{
+                    transform:"rotate(90deg)"
+                  }}
                 />
                 :
               </Grid>
@@ -224,7 +228,7 @@ interface InformationProps {
                 }}
               >
                 <Box className="btn_wrap">
-                  <Button> A</Button>
+                  <Button><NorthIcon sx={{fontSize:"1rem"}}/></Button>
                 </Box>
               </Grid>
             </Grid>
@@ -249,6 +253,9 @@ interface InformationProps {
                   component={"img"}
                   src={left_arrow.src}
                   px={"1rem"}
+                  sx={{
+                    transform:"rotate(-90deg)"
+                  }}
                 />
                 :
               </Grid>
@@ -263,7 +270,7 @@ interface InformationProps {
                 }}
               >
                 <Box className="btn_wrap">
-                  <Button>D</Button>
+                  <Button><NorthIcon sx={{fontSize:"1rem",transform:"rotate(-180deg)"}}/></Button>
                 </Box>
               </Grid>
             </Grid>
