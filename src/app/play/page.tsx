@@ -32,7 +32,7 @@ const page = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    if (showGame) {
+    if (typeof window !== "undefined" && showGame) {
       setIsPlaying(true);
       const handleKeyDown = (event: { preventDefault: () => void }) => {
         event.preventDefault();
