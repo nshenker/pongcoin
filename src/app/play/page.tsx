@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/logo.png";
 import BottomSection from "@/pages/LandingPage/BottomSection";
 import PongComponent from "./PongComponent";
-import PongGame from "./PongGame";
+
 import Information from "./Information";
 
 const vt323Font = VT323({
@@ -32,39 +32,34 @@ const page = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    if (showGame) {
-      setIsPlaying(true)
+    if (typeof window !== "undefined" && showGame) {
+      setIsPlaying(true);
       const handleKeyDown = (event: { preventDefault: () => void }) => {
         event.preventDefault();
       };
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
     }
-
   }, [showGame]);
 
-   const togglePlay = () => {
+  const togglePlay = () => {
     if (audioRef.current) {
-        if (isPlaying) {
+      if (isPlaying) {
         audioRef.current.play();
       } else {
         audioRef.current.pause();
-        
       }
-     
     }
-  }
- 
+  };
 
   const goBack = () => {
     setShowGame(false);
-    setIsPlaying(false)
-  }
+    setIsPlaying(false);
+  };
 
   useEffect(() => {
-    togglePlay()
-  },[isPlaying])
-
+    togglePlay();
+  }, [isPlaying]);
 
   return (
     <Box>
@@ -91,7 +86,7 @@ const page = () => {
             position: "relative",
             "& canvas": {
               width: "100% !important",
-              height:{sm:"auto !important",xs:"100% !important"}
+              height: { sm: "auto !important", xs: "100% !important" },
             },
             "& button": {
               fontFamily: `${Press_Start_2P_font.style.fontFamily}`,
@@ -126,31 +121,24 @@ const page = () => {
           <Box display={"flex"} my={"1rem"}>
             <Box className="btn_wrap">
               <Button onClick={() => goBack()}>Back</Button>
-           
-
             </Box>
 
-            <Box sx={{ml: "10px" }} className="btn_wrap" onClick={() => setIsPlaying(!isPlaying)}>
-            <Button sx={{width: "50px"}}>
-              {
-                isPlaying ?
-                <>
-               Mute  </>
-
-:
-<> Unmute </>
-
-              }
+            <Box
+              sx={{ ml: "10px" }}
+              className="btn_wrap"
+              onClick={() => setIsPlaying(!isPlaying)}
+            >
+              <Button sx={{ width: "50px" }}>
+                {isPlaying ? <>Mute </> : <> Unmute </>}
               </Button>
-</Box>
+            </Box>
           </Box>
           <PongComponent cpuMode={true} />
-
         </Box>
       )}
       <audio ref={audioRef} src={"/game-sound.mp3"} />
 
-      <BottomSection  />
+      <BottomSection />
     </Box>
   );
 };
