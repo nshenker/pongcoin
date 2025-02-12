@@ -6,9 +6,14 @@ import launch from "../../assets/launch.gif";
 import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/logo.png";
 import BottomSection from "@/pages/LandingPage/BottomSection";
-import PongComponent from "./PongComponent";
-
+import dynamic from 'next/dynamic'
 import Information from "./Information";
+
+const PongComponent = dynamic(
+  () => import('./PongComponent'),
+  { ssr: false }
+)
+
 
 const vt323Font = VT323({
   variable: "--font-VT323-sans",
