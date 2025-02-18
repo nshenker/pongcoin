@@ -11,6 +11,7 @@ import left_arrow from "../../assets/left_arrow.svg";
 import right_arrow from "../../assets/right_arrow.svg";
 import NorthIcon from '@mui/icons-material/North';
 import CreatePoolDialog from "@/components/CreatePool";
+import PoolComponent from "./PoolComponent";
 
 const vt323Font = VT323({
   variable: "--font-VT323-sans",
@@ -32,7 +33,7 @@ interface InformationProps {
   }
 
   const Information: React.FC<InformationProps> = ({ setShowGame }) => {
-  const [isDialogOpen,setIsDialogOpen] = useState();
+  const [isDialogOpen,setIsDialogOpen] = useState(false);
 
   return (
     <Box
@@ -89,12 +90,12 @@ interface InformationProps {
           backgroundRepeat: "no-repeat",
           backgroundSize: "100% 100%",
           backgroundPosition: "100% 100%",
-          // height:"600PX",
-          height: "100%",
+          height:{lg:"550px",xs:"480px"},
+          // height: "100%",
           width: { sm: "80%", xs: "100%" },
           m: "0 auto",
           px: { sm: "3rem", xs: "1rem" },
-          pt: { sm: "1.3rem", xs: "2.5rem" },
+          pt: { sm: "2.2rem", xs: "2.5rem" },
           "& .text_1": {
             fontSize: { sm: "22px", xs: "22px" },
             fontFamily: vt323Font.style.fontFamily,
@@ -165,7 +166,7 @@ interface InformationProps {
         
         <Box
           sx={{
-            mt: { sm: "3rem", xs: "1rem" },
+            mt: { sm: "4rem", xs: "3rem" },
           }}
           textAlign={"center"}
         >
@@ -197,7 +198,8 @@ interface InformationProps {
           >
             <Box className="btn_wrap">
               <Button
-              onClick={()=>setShowGame(true)}
+              onClick={()=>setIsDialogOpen(true)}
+              // onClick={()=>setShowGame(true)}
                 sx={{
                   width: "auto !important",
                   background: "#E25822 !important",
@@ -209,6 +211,9 @@ interface InformationProps {
               <CreatePoolDialog isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />
             </Box>
           </Box>
+        </Box>
+        <Box>
+          <PoolComponent/>
         </Box>
       </Box>
     </Box>
