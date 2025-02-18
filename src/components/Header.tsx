@@ -167,7 +167,7 @@ const Header = () => {
               <Button component={Link} href="/#roadmap">Roadmap</Button>
             </Box>
             <Box className="btn_wrap">
-                <Button component={Link} href="/play">
+                <Button component={Link} href="/pool">
                   Play
                 </Button>
               </Box>
