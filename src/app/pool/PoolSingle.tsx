@@ -1,3 +1,4 @@
+"use client";
 import { Box, Button, TableCell, TableRow } from '@mui/material'
 import Link from 'next/link'
 import React from 'react'
