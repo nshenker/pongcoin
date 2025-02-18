@@ -1,3 +1,4 @@
+"use client"; 
 import { Box, Button, Typography } from "@mui/material";
 import {
   IBM_Plex_Mono,

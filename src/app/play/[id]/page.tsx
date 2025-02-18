@@ -2,9 +2,8 @@
 import Header from "@/components/Header";
 import { Box, Button, Typography } from "@mui/material";
 import { IBM_Plex_Mono, Press_Start_2P, VT323 } from "next/font/google";
-import launch from "../../assets/launch.gif";
 import React, { useEffect, useRef, useState } from "react";
-import logo from "../../assets/logo.png";
+import logo from "../../../assets/logo.png";
 import BottomSection from "@/pages/LandingPage/BottomSection";
 import dynamic from 'next/dynamic'
 import Information from "./Information";

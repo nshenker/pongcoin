@@ -2,13 +2,13 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { IBM_Plex_Mono, Press_Start_2P, VT323 } from "next/font/google";
 import React from "react";
-import play_icon from "../../assets/play_icon.svg";
-import obj from "../../assets/obj.svg";
-import control from "../../assets/control.svg";
-import info_bg from "../../assets/info_bg.png";
-import info_icon from "../../assets/info_icon.svg";
-import left_arrow from "../../assets/left_arrow.svg";
-import right_arrow from "../../assets/right_arrow.svg";
+import play_icon from "../../../assets/play_icon.svg";
+import obj from "../../../assets/obj.svg";
+import control from "../../../assets/control.svg";
+import info_bg from "../../../assets/info_bg.png";
+import info_icon from "../../../assets/info_icon.svg";
+import left_arrow from "../../../assets/left_arrow.svg";
+import right_arrow from "../../../assets/right_arrow.svg";
 import NorthIcon from '@mui/icons-material/North';
 
 const vt323Font = VT323({
