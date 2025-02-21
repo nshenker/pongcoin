@@ -33,12 +33,14 @@ const [connection,setConnection] = useState(null)
 // },[])
   
 
-let ws = new WebSocket(WS_URL); 
+const ws = new WebSocket(WS_URL); 
 
 ws.onopen  = () => {
     ws.send(`{"e": "init" ,  "token" : "${access_token}"}`);  
     setConnection(ws)
 } 
+
+
     // useEffect(() => {
     //     console.log("mov",ws.readyState)
     // if(ws.readyState === 1){
