@@ -33,12 +33,7 @@ const [connection,setConnection] = useState(null)
 // },[])
   
 
-const ws = new WebSocket(WS_URL); 
 
-ws.onopen  = () => {
-    ws.send(`{"e": "init" ,  "token" : "${access_token}"}`);  
-    setConnection(ws)
-} 
 
 
     // useEffect(() => {
@@ -49,7 +44,16 @@ ws.onopen  = () => {
     // },[ws])
 
   useEffect(() => {
-  
+    if(!connection){
+
+    const ws = new WebSocket(WS_URL); 
+
+    ws.onopen  = () => {
+        ws.send(`{"e": "init" ,  "token" : "${access_token}"}`);  
+        setConnection(ws)
+    } 
+  }
+
     if(connection){
         console.log("connection.readyState",connection.readyState)
       
