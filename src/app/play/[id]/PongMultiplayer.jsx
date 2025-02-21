@@ -82,7 +82,7 @@ ws.onopen  = () => {
         }
 
         if(data.event == "reset-game"){
-            setBall(data.data)
+            // setBall(data.data)
         }
 
 
