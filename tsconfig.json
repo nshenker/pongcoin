@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/CreatePool.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/CreatePool.tsx", "src/app/pool/PoolSingle.jsx", "src/app/play/[id]/PongMultiplayer.jsx"],
   "exclude": ["node_modules"]
 }

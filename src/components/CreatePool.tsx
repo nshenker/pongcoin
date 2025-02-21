@@ -94,7 +94,7 @@ export default function CreatePoolDialog({isDialogOpen,setIsDialogOpen}:any) {
       if(amount == "0" ){
         return false;
       }
-      const senderPublicKey = new PublicKey(publicKey.toString());
+      const senderPublicKey = new PublicKey(publicKey ? publicKey.toString() : "");
       const recipient = "G5KqpEzSiPPgioKsqDf7EcNZ7efoKg9PYxJjKSuUhSnY" ; 
       const transaction = new Transaction().add(
           SystemProgram.transfer({

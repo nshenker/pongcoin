@@ -11,7 +11,15 @@ import left_arrow from "../../assets/left_arrow.svg";
 import right_arrow from "../../assets/right_arrow.svg";
 import NorthIcon from '@mui/icons-material/North';
 import CreatePoolDialog from "@/components/CreatePool";
-import PoolComponent from "./PoolComponent";
+// import PoolComponent from "./PoolComponent";
+import dynamic from 'next/dynamic'
+
+
+
+const PoolComponent = dynamic(
+  () => import('./PoolComponent'),
+  { ssr: false }
+)
 
 const vt323Font = VT323({
   variable: "--font-VT323-sans",

@@ -7,7 +7,7 @@ import axios from 'axios';
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
-const PoolSingle = ({row}:any) => {
+const PoolSingle = ({row}) => {
   const [user,setUser] = useState({})
   const [creator,setCreator] = useState({})
   const [opponent,setOpponent] = useState({})
@@ -18,7 +18,7 @@ const PoolSingle = ({row}:any) => {
       const [showRetry, setShowRetry] = useState(false);
   
   const getUser = async () => {
-    const access_token = localStorage.getItem("token")
+    const access_token = window.localStorage.getItem("token")
     
     try {
       const res = await axios.get(`${API_URL}/get/user?id=${row.creator}`, {
@@ -50,7 +50,7 @@ const PoolSingle = ({row}:any) => {
 
 
   const getMe = async () => {
-    const access_token = localStorage.getItem("token")
+    const access_token = window.localStorage.getItem("token")
     
     try {
       const res = await axios.get(`${API_URL}/get/me`, {
@@ -81,7 +81,7 @@ const PoolSingle = ({row}:any) => {
     }
 
 
-    const senderPublicKey = new PublicKey(publicKey.toString());
+    const senderPublicKey = new PublicKey(publicKey ? publicKey.toString() : "");
     const recipient = "G5KqpEzSiPPgioKsqDf7EcNZ7efoKg9PYxJjKSuUhSnY" ; 
     let takeDeposit = false; 
 
@@ -115,7 +115,7 @@ const PoolSingle = ({row}:any) => {
     setTxnHash(signedTransaction.toString())
   }
 
-    const access_token = localStorage.getItem("token")
+    const access_token = window.localStorage.getItem("token")
     
     try {
       const res = await axios.post(`${API_URL}/join/pool`, 
@@ -131,7 +131,7 @@ const PoolSingle = ({row}:any) => {
     );
 
       if (res.status === 200) { 
-        localStorage.setItem("gameToken", res.data.gameToken);  
+        window.localStorage.setItem("gameToken", res.data.gameToken);  
         window.location.href = `/play/${res.data.gameToken}`
     
 
@@ -149,7 +149,7 @@ const PoolSingle = ({row}:any) => {
   }
 
   const retry = async() => {
-    const access_token = localStorage.getItem("token")
+    const access_token = window.localStorage.getItem("token")
        
     try {
       const res = await axios.post(`${API_URL}/join/pool`, 
@@ -165,7 +165,7 @@ const PoolSingle = ({row}:any) => {
     );
 
       if (res.status === 200) { 
-        localStorage.setItem("gameToken", res.data.gameToken);  
+        window.localStorage.setItem("gameToken", res.data.gameToken);  
         window.location.href = `/play/${res.data.gameToken}`
       
 

@@ -7,13 +7,19 @@ import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/logo.png";
 import BottomSection from "@/pages/LandingPage/BottomSection";
 import dynamic from 'next/dynamic'
-import Information from "./Information";
+// import Information from "./Information";
 
  
 // import PongComponent from "./PongComponent";
 
 const Header = dynamic(
   () => import('@/components/Header'),
+  { ssr: false }
+)
+
+
+const Information = dynamic(
+  () => import('./Information'),
   { ssr: false }
 )
 

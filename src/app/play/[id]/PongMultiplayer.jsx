@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
@@ -21,7 +22,7 @@ const PongMultiplayer = () => {
 const WS_URL = 'wss://d2qj5dvu6ct4if.cloudfront.net'
  
 const access_token = localStorage.getItem("gameToken")
-const [connection,setConnection] = useState(null) 
+const [connection,setConnection] = useState(null)
 
 // useEffect(() => {
 //     const ws = new WebSocket(WS_URL);   
