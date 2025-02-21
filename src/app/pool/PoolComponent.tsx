@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,18 +12,40 @@ import {
 } from "@mui/material";
 import { IBM_Plex_Mono } from "next/font/google";
 import PoolSingle from "./PoolSingle";
+import axios from "axios";
+import { API_URL } from "@/utils/config";
 
-const data = [
-  { id: 1, createdBy: "Pool A", amount: "100 SOL", createdOn: "Active" },
-  { id: 2, createdBy: "Pool B", amount: "250 SOL", createdOn: "Inactive" },
-  { id: 3, createdBy: "Pool C", amount: "75 SOL", createdOn: "Active" },
-];
+
+
 const IBM_Plex_Mono_Font = IBM_Plex_Mono({
   variable: "--font-IBM_Plex_Mono-sans",
   subsets: ["latin"],
   weight: "400",
 });
 const PoolComponent: React.FC = () => {
+
+  const [data,setData] = useState([]);
+
+  const getData = async () => {
+    const access_token = localStorage.getItem("token")
+    
+    try {
+      const res = await axios.get(`${API_URL}/get/pools`);
+
+      if (res.status === 200) {        
+        setData(res.data.data)
+      }
+  
+    } catch (err) {
+       
+    }
+  }
+
+
+  useEffect(() => {
+    getData();
+  },[])
+
   return (
     <TableContainer
       component={Paper}

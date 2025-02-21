@@ -14,7 +14,8 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { getTokenBalance } from "@/utils/callFucntions";
 import wallet_avatar from "@/assets/wallet_avatar.svg"
 import Link from "next/link";
-
+import axios from "axios"
+import { API_URL } from "@/utils/config";
 // Font configurations
 const courierPrimeFont = Courier_Prime({
   variable: "--font-Courier_Prime-sans",
@@ -41,6 +42,30 @@ const Header = () => {
   const [tokenBalance,setTokenBalance] = useState(0)
   const [solBalance,setSolBalance] = useState("0")
   const anchorRef = React.useRef<HTMLButtonElement>(null);
+  
+
+  const createUser = async () => {
+    
+    try {
+      const res = await axios.post(`${API_URL}/create/user`, {
+        address: publicKey
+      });
+
+      if (res.status === 200) {
+        console.log(res);
+        localStorage.setItem("token", res.data.token);       
+      }
+  
+    } catch (err) {
+       
+    }
+  };
+
+  const hangleConnect = async () => {
+    await createUser()
+  }
+
+  
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -80,6 +105,7 @@ const Header = () => {
   }
   useEffect( () =>  {
     if(publicKey){
+      hangleConnect()
       getBalance();
     }
   },[publicKey,connection])

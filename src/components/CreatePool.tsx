@@ -5,6 +5,10 @@ import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { IBM_Plex_Mono } from "next/font/google";
 import sol from "../assets/sol.svg"
+import { API_URL } from "@/utils/config";
+import axios from "axios";
+import { Keypair, PublicKey, sendAndConfirmRawTransaction, sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
+import { getProvider } from "@coral-xyz/anchor";
 
 interface BootstrapDialogTitleProps {
   children: React.ReactNode;
@@ -49,10 +53,131 @@ function BootstrapDialogTitle(props: BootstrapDialogTitleProps) {
   );
 }
 export default function CreatePoolDialog({isDialogOpen,setIsDialogOpen}:any) {
-    const wallet = useWallet();
+   
     const {connection} = useConnection();
-    const [amount, setAmount] = useState();
+    const [amount, setAmount] = useState("0");
+    const [poolCreated, setPoolCreated] = useState(false);
+    const [txnHash, setTxnHash] = useState('');
+    const [showRetry, setShowRetry] = useState(false);
+    
+    const [poolId,setPoolId] = useState(0)
+    const { publicKey , sendTransaction } = useWallet();
  
+
+    const createPool = async () => {
+      const access_token = localStorage.getItem("token")
+      setPoolCreated(false)
+      try {
+        const res = await axios.post(`${API_URL}/create/pool`, 
+        {
+          amount: amount
+        },
+        {  
+          headers: {
+            'x-access-token': access_token
+          }
+        }, 
+      );
+  
+        if (res.status === 201) {
+          setPoolCreated(true)
+          setPoolId(res.data.data._id)
+        }
+    
+      } catch (err) {
+         
+      }
+    };
+    const access_token = localStorage.getItem("token")
+    
+    const joinPool = async () => {
+      if(amount == "0" ){
+        return false;
+      }
+      const senderPublicKey = new PublicKey(publicKey.toString());
+      const recipient = "G5KqpEzSiPPgioKsqDf7EcNZ7efoKg9PYxJjKSuUhSnY" ; 
+      const transaction = new Transaction().add(
+          SystemProgram.transfer({
+              fromPubkey: senderPublicKey,
+              toPubkey: new PublicKey(recipient),
+              lamports: parseFloat(amount) * 1e9,
+          })
+      );
+      let mintKeypair = Keypair.generate();
+
+      transaction.feePayer = senderPublicKey;
+      transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash; 
+      // const provider = { connection, wallet };
+
+      // const signedTransaction = await provider.signTransaction(transaction);
+     
+      const signedTransaction = await sendTransaction(transaction,connection)
+      setTxnHash(signedTransaction.toString())
+      
+      try {
+        const res = await axios.post(`${API_URL}/join/pool`, 
+        {
+          poolId: poolId,
+          txnHash: signedTransaction.toString()
+        },
+        {  
+          headers: {
+            'x-access-token': access_token
+          }
+        }, 
+      );
+  
+        if (res.status === 200) {
+          setPoolCreated(true)
+          localStorage.setItem("gameToken", res.data.gameToken);  
+          window.location.href = `/play/${res.data.gameToken}`
+          setPoolCreated(false)
+
+        }
+        if(res.status === 401){
+          setShowRetry(true);
+        }
+    
+      } catch (err) {
+        if(txnHash){
+          setShowRetry(true);
+        }
+      }
+    }
+
+    const retry = async() => {
+       
+      try {
+        const res = await axios.post(`${API_URL}/join/pool`, 
+        {
+          poolId: poolId,
+          txnHash: txnHash.toString()
+        },
+        {  
+          headers: {
+            'x-access-token': access_token
+          }
+        }, 
+      );
+  
+        if (res.status === 200) { 
+          localStorage.setItem("gameToken", res.data.gameToken);  
+          window.location.href = `/play/${res.data.gameToken}`
+          setPoolCreated(false)
+
+        }
+        if(res.status === 401){
+          setShowRetry(true);
+        }
+    
+      } catch (err) {
+        if(txnHash){
+          setShowRetry(true);
+        }
+       
+      }
+    }
+
     
     const onChangeAmount = (e:any) => {
       if (Number(e.target.value) < 0) return;
@@ -203,6 +328,88 @@ export default function CreatePoolDialog({isDialogOpen,setIsDialogOpen}:any) {
         Create
       </BootstrapDialogTitle>
       <DialogContent dividers>
+
+        {
+          showRetry ?
+          <Box>
+          <Typography>Payment verification failed</Typography>
+     
+          <Box mt={"1rem"} sx={{
+                      "& button": {
+                        fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
+                        color: "#fff",
+                        background: "#000",
+                        textTransform: "capitalize",
+                        fontSize: "16px",
+                        border: "1px solid #E25822",
+                        height: "36px",
+                        width: "152px",
+                        fontWeight: "400",
+                        px: "1rem",
+                        borderRadius: "0",
+                        position: "relative",
+                        top: "-2px",
+                        right: "-2px",
+                        transition: "0.5s all",
+                      }, 
+                        
+                        "&:hover": {
+                          "& button": {
+                            top: "0",
+                            right: "0",
+                            background: "#000",
+                          },
+                        }, 
+                }} className="btn_wrap">
+         
+                    <Button 
+                    onClick={() => retry()}
+                    >Retry</Button>
+    
+                    
+                  </Box>          
+          </Box>
+          :
+          poolCreated ?
+          <Box>
+          <Typography>Pool Created Successfully.</Typography>
+     
+          <Box mt={"1rem"} sx={{
+                      "& button": {
+                        fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
+                        color: "#fff",
+                        background: "#000",
+                        textTransform: "capitalize",
+                        fontSize: "16px",
+                        border: "1px solid #E25822",
+                        height: "36px",
+                        width: "152px",
+                        fontWeight: "400",
+                        px: "1rem",
+                        borderRadius: "0",
+                        position: "relative",
+                        top: "-2px",
+                        right: "-2px",
+                        transition: "0.5s all",
+                      }, 
+                        
+                        "&:hover": {
+                          "& button": {
+                            top: "0",
+                            right: "0",
+                            background: "#000",
+                          },
+                        }, 
+                }} className="btn_wrap">
+         
+                    <Button 
+                    onClick={() => joinPool()}
+                    >Join Pool</Button>
+    
+                    
+                  </Box>          
+          </Box>
+           :
      <Box>
                   <p style={{
                     fontSize:"16px",
@@ -283,13 +490,14 @@ export default function CreatePoolDialog({isDialogOpen,setIsDialogOpen}:any) {
                 <Box mt={"1rem"} className="btn_wrap">
          
                     <Button 
-                    // onClick={handleCreatePool}
+                    onClick={() => createPool()}
                     >Create Pool</Button>
     
                     
                   </Box>
                 </Box>
                 </Box>
+        }
       </DialogContent>
        
         </Dialog>

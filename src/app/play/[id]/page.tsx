@@ -13,6 +13,10 @@ const PongComponent = dynamic(
   { ssr: false }
 )
 
+const PongMultiplayer = dynamic(
+  () => import('./PongMultiplayer'),
+  { ssr: false }
+)
 
 const vt323Font = VT323({
   variable: "--font-VT323-sans",
@@ -137,7 +141,8 @@ const page = () => {
               </Button>
             </Box>
           </Box>
-          <PongComponent cpuMode={true} />
+          {/* <PongComponent cpuMode={true} /> */}
+          <PongMultiplayer />
         </Box>
       )}
       <audio ref={audioRef} src={"/game-sound.mp3"} />
