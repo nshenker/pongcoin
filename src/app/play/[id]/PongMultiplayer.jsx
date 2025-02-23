@@ -1,186 +1,174 @@
-"use client"
-import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import Ball from "./ball.js";
+import Player from "./player.js";
+import { useEffect, useRef, useState } from "react";
 
 
-const WIDTH = 800;
-const HEIGHT = 400;
-const PADDLE_WIDTH = 10;
-const PADDLE_HEIGHT = 100;
-const BALL_RADIUS = 10;
+function App() {
 
-const PongMultiplayer = () => {
-  const [players, setPlayers] = useState({});
-  const [ball, setBall] = useState({ x: WIDTH / 2, y: HEIGHT / 2 });
-  const [scores, setScores] = useState({ player1: 0, player2: 0 });
-  const [playerNumber, setPlayerNumber] = useState(null);
-  const [speed, setSpeed] = useState(1);
-  const canvasRef = useRef(null);
-  const paddleY = useRef(250);
-// const socket = io("http://localhost:3004");
+    
+const startBtn = useRef();
+const canvas = useRef();
+const [message,setmessage] = useState();
+const [showModal,setShowModal] = useState(true);
+const [showButton,setShowButton] = useState(true);
+const [ws,setws] = useState();
+
 // const WS_URL = 'http://localhost:3330'
-const WS_URL = 'wss://d2qj5dvu6ct4if.cloudfront.net'
- 
-const access_token = localStorage.getItem("gameToken")
-const [connection,setConnection] = useState(null)
-
-// useEffect(() => {
-//     const ws = new WebSocket(WS_URL);   
-//     if(ws.readyState === WebSocket.OPEN){
-         
-
-//     }
-// },[])
-  
+const WS_URL = 'https://d2qj5dvu6ct4if.cloudfront.net'
 
 
+useEffect(() => {
 
 
-    // useEffect(() => {
-    //     console.log("mov",ws.readyState)
-    // if(ws.readyState === 1){
-    //     setConnection(ws)
-    // }
-    // },[ws])
+let ctx = canvas.current.getContext('2d');
 
-  useEffect(() => {
-    if(!connection){
 
-    const ws = new WebSocket(WS_URL); 
+let player1;
+let player2;
+let ball;
 
-    ws.onopen  = () => {
-        ws.send(`{"e": "init" ,  "token" : "${access_token}"}`);  
-        setConnection(ws)
-    } 
-  }
+let isGameStarted = false;
+let playerNo = 0;
+let roomID;
 
-    if(connection){
-        console.log("connection.readyState",connection.readyState)
-      
 
-       
-        connection.onmessage = (event) => {
-        // console.log("event",event)
+const socket = io(WS_URL, {
+    transports: ['websocket']
+});
 
-        const data = JSON.parse(event.data);
+setws(socket)
 
-        if(data.event == "player-assigned"){
-            setPlayerNumber(data.data)
+socket.on("playerNo", (newPlayerNo) => {
+    console.log(newPlayerNo);
+    playerNo = newPlayerNo;
+});
+
+socket.on("startingGame", () => {
+    isGameStarted = true;
+    setmessage("We are going to start the game...");
+});
+
+socket.on("startedGame", (room) => {
+    console.log(room);
+    setShowModal(false)
+
+    roomID = room.id;
+    setmessage("");
+
+    player1 = new Player(room.players[0].x, room.players[0].y, 20, 60, 'red');
+    player2 = new Player(room.players[1].x, room.players[1].y, 20, 60, 'blue');
+
+    player1.score = room.players[0].score;
+    player2.score = room.players[1].score;
+
+
+    ball = new Ball(room.ball.x, room.ball.y, 10, 'white');
+
+    window.addEventListener('keydown', (e) => {
+        if (isGameStarted) {
+            if (e.keyCode === 38) {
+                console.log("player move 1 up")
+                socket.emit("move", {
+                    roomID: roomID,
+                    playerNo: playerNo,
+                    direction: 'up'
+                })
+            } else if (e.keyCode === 40) {
+                console.log("player move 1 down")
+                socket.emit("move", {
+                    roomID: roomID,
+                    playerNo: playerNo,
+                    direction: 'down'
+                })
+            }
         }
+    });
 
-        if(data.event == "room-full"){
-            alert("Room is full!")
-        }
+    draw();
+});
 
-        if(data.event == "update-players"){
-            setPlayers(data.data)
-        }
+socket.on("updateGame", (room) => {
+    player1.y = room.players[0].y;
+    player2.y = room.players[1].y;
 
-        if(data.event == "update-ball"){
-            console.log("update-ball",data.data)
-            setBall(data.data)
-        }
+    player1.score = room.players[0].score;
+    player2.score = room.players[1].score;
 
-        if(data.event == "update-scores"){
-            setScores(data.data)
-        }
+    ball.x = room.ball.x;
+    ball.y = room.ball.y;
 
-        if(data.event == "reset-game"){
-            // setBall(data.data)
-        }
+    draw();
+});
+
+socket.on("endGame", (room) => {
+    isGameStarted = false;
+    setShowModal(true)
+
+    setmessage(`${room.winner === playerNo ? "You are Winner!" : "You are Loser!"}`);
+
+    socket.emit("leave", roomID);
 
 
+    setTimeout(() => {
+        ctx.clearRect(0, 0, 800, 500);
+        startBtn.style.display = 'block';
+    }, 2000);
+});
+
+
+
+function draw() {
+    ctx.clearRect(0, 0, 800, 500);
+
+
+    player1.draw(ctx);
+    player2.draw(ctx);
+    ball.draw(ctx);
+
+    // center line
+    ctx.strokeStyle = 'white';
+    ctx.beginPath();
+    ctx.setLineDash([10, 10])
+    ctx.moveTo(400, 5);
+    ctx.lineTo(400, 495);
+    ctx.stroke();
+}
+},[])
+
+function startGame() {
+    // startBtn.style.display = 'none';
+    setShowButton(false)
+    console.log(ws)
+    if (ws.connected) {
+        ws.emit('join');
+        setmessage("Waiting for other player...")
     }
+    else {
+        setmessage("Refresh the page and try again...")
     }
+}
 
-    // socket.onmessage((event) => {
-    //     console.log(event)
-    // })
 
-    // socket.on("player-assigned", (number) => setPlayerNumber(number));
-
-    // ws.on("room-full", () => alert("Room is full!"));
-
-    // socket.on("update-players", (players) => setPlayers(players));
-
-    // socket.on("update-ball", (newBall) => setBall(newBall));
-
-    // socket.on("update-scores", (newScores) => setScores(newScores));
-
-    // socket.on("reset-game", (newBall) => setBall(newBall));
-
-    return () => {
-        // ws.close();
-    //   socket.off("player-assigned");
-    //   socket.off("update-players");
-    //   socket.off("update-ball");
-    //   socket.off("update-scores");
-    //   socket.off("reset-game");
-    //   socket.off("room-full");
-    };
-  }, [connection]);
-
-  const movePaddle = (event) => {
-    const y = Math.min(Math.max(event.clientY - PADDLE_HEIGHT / 2, 0), HEIGHT - PADDLE_HEIGHT);
-    paddleY.current = y;
-    console.log("mov")
-    if(connection){
-    console.log("mov-conn")
-        connection.send(`{"e": "move-paddle", "y" : ${y} ,  "token" : "${access_token}"}`);
-    }
-   
-  };
-
-  // Handle touch controls for mobile
-  const handleTouchMove = (event) => {
-    const touchY = event.touches[0].clientY - PADDLE_HEIGHT / 2;
-    const y = Math.min(Math.max(touchY, 0), HEIGHT - PADDLE_HEIGHT);
-    paddleY.current = y;
-    if(connection){
-        connection.send(`{"e": "move-paddle", "y" : ${y} ,  "token" : "${access_token}"}`);
-    }
-  };
-
-  const handleSpeedChange = (e) => {
-    const newSpeed = parseFloat(e.target.value);
-    setSpeed(newSpeed);
-    socket.emit("change-speed", newSpeed);
-  };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    const updateGame = () => {
-      ctx.clearRect(0, 0, WIDTH, HEIGHT);
-      ctx.fillStyle = "white";
-
-      Object.values(players).forEach((player, index) => {
-        ctx.fillRect(index === 0 ? 20 : WIDTH - 30, player.y, PADDLE_WIDTH, PADDLE_HEIGHT);
-      });
-
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.closePath();
-
-      ctx.font = "24px Arial";
-      ctx.fillText(`Player 1: ${scores.player1 || 0}`, 50, 30);
-      ctx.fillText(`Player 2: ${scores.player2 || 0}`, WIDTH - 150, 30);
-
-      requestAnimationFrame(updateGame);
-    };
-
-    updateGame();
-  }, [players, ball, scores]); 
-
-  return (
-    <div onMouseMove={movePaddle} onTouchMove={handleTouchMove} style={{ textAlign: "center", color: "white" }}>
-      <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} style={{ background: "black" }} />
-      <input type="range" min="1" max="10" step="0.1" value={speed} onChange={handleSpeedChange} />
-      <p>Ball Speed: {speed}x</p>
+return (
+    <div class="container">
+    
+    <div class="game" style={{position: "relative"}}>
+        <canvas id="canvas" ref={canvas} width="800"  style={{ background: "black" }} height="500"></canvas>
+        {
+            showModal &&
+            <div  style={{background: "#fff" , padding: "10px" , width: "500px" , height: "auto" , minHeight: "20%" ,  maxHeight: "50%" , position: "absolute", top: "25%" , left: "30%"}}>
+            {message != "" && <p id="message" style={{textAlign: "center", paddingTop: "10%", fontSize: "25px"}}>{message}</p> }
+            {
+                showButton &&
+            <button style={{width: "100%" , margin: "10% auto" }}  onClick={() => startGame()}>
+                START GAME
+            </button>    
+            }
+            </div>    
+        }
     </div>
-  );
-};
-
-export default PongMultiplayer;
+</div>
+)
+}
+export default App;
