@@ -40,13 +40,21 @@ const socket = io(WS_URL, {
 setws(socket)
 
 socket.on("playerNo", (newPlayerNo) => {
-    console.log(newPlayerNo);
+    // console.log(newPlayerNo);
     playerNo = newPlayerNo;
 });
 
 socket.on("startingGame", () => {
     isGameStarted = true;
     setmessage("We are going to start the game...");
+
+    setInterval(() => {
+    const access_token = localStorage.getItem("gameToken")
+        socket.emit("online", { 
+        token: access_token
+    }) 
+    })
+
 });
 
 socket.on("startedGame", (room) => {
@@ -112,7 +120,7 @@ socket.on("endGame", (room) => {
 
     setTimeout(() => {
         ctx.clearRect(0, 0, 800, 500);
-        startBtn.style.display = 'block';
+       
     }, 2000);
 });
 
@@ -134,14 +142,30 @@ function draw() {
     ctx.lineTo(400, 495);
     ctx.stroke();
 }
+
+// return () => {
+//     if(isGameStarted){
+//         const access_token = localStorage.getItem("gameToken")
+//         socket.emit("exit", {
+//             roomID : roomID,
+//             playerNo: playerNo,
+//             token: access_token
+//         });
+//     }
+  
+//   };
+
 },[])
 
 function startGame() {
     // startBtn.style.display = 'none';
     setShowButton(false)
     console.log(ws)
+    const access_token = localStorage.getItem("gameToken")
     if (ws.connected) {
-        ws.emit('join');
+        ws.emit('join', {
+            token: access_token
+        });
         setmessage("Waiting for other player...")
     }
     else {

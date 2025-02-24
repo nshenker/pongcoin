@@ -41,7 +41,7 @@ const page = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined" && showGame) {
-      setIsPlaying(true);
+      // setIsPlaying(true);
       const handleKeyDown = (event: { preventDefault: () => void }) => {
         event.preventDefault();
       };
