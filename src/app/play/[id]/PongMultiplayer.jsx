@@ -131,7 +131,7 @@ socket.on("updateGame", (room) => {
 });
 
 socket.on("endGame", (room) => {
-    isGameStarted = false;
+    // isGameStarted = false;
     setShowModal(true)
 
     setmessage(`${room.winner === playerNo ? "You have Won!" : "You have Lost!"}`);
@@ -222,7 +222,7 @@ return (
             </Box>
             }
             {
-                !data?.gameStarted &&
+                !isGameStarted &&
                    <Box className="btn_wrap" sx={{margin: "10% auto",width:"auto",display:"inline-block"}}>
             <button style={{width: "auto"}}  onClick={() => setIsDialogOpen(true)}>
                LEAVE GAME
