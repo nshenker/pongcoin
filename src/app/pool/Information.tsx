@@ -1,21 +1,31 @@
 "use client";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { IBM_Plex_Mono, Press_Start_2P, VT323 } from "next/font/google";
 import React, { useState } from "react";
 import play_icon from "../../assets/play_icon.svg";
-import obj from "../../assets/obj.svg";
-import control from "../../assets/control.svg";
 import info_bg from "../../assets/info_bg.png";
 import info_icon from "../../assets/info_icon.svg";
-import left_arrow from "../../assets/left_arrow.svg";
-import right_arrow from "../../assets/right_arrow.svg";
-import NorthIcon from '@mui/icons-material/North';
 import CreatePoolDialog from "@/components/CreatePool";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import LiveTvIcon from "@mui/icons-material/LiveTv";
+import HistoryIcon from "@mui/icons-material/History";
 // import PoolComponent from "./PoolComponent";
 import dynamic from 'next/dynamic'
 
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
 
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
+  return (
+    <div hidden={value !== index}>
+      {value === index && <Box p={"0.5rem 0"}>{children}</Box>}
+    </div>
+  );
+};
 const PoolComponent = dynamic(
   () => import('./PoolComponent'),
   { ssr: false }
@@ -42,6 +52,11 @@ interface InformationProps {
 
   const Information: React.FC<InformationProps> = ({ setShowGame }) => {
   const [isDialogOpen,setIsDialogOpen] = useState(false);
+  const [tabIndex, setTabIndex] = useState<number>(0);
+
+  const handleChange = (_event: React.SyntheticEvent, newIndex: number) => {
+    setTabIndex(newIndex);
+  };
 
   return (
     <Box
@@ -120,34 +135,7 @@ interface InformationProps {
           "& img": {
             verticalAlign: "middle",
           },
-          "& button": {
-            fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
-            color: "#fff",
-            background: "#000",
-            textTransform: "capitalize",
-            fontSize: "16px",
-            border: "1px solid #000",
-            height: "38px",
-            width: "38px",
-            fontWeight: "400",
-            px: "1rem",
-            borderRadius: "0",
-            position: "relative",
-            top: "-3px",
-            right: "-3px",
-            transition: "0.5s all",
-          },
-          "& .btn_wrap": {
-            background: "#E25822",
-            transition: "0.5s all",
-            "&:hover": {
-              "& button": {
-                top: "0",
-                right: "0",
-                background: "#000",
-              },
-            },
-          },
+  
         }}
       >
         <Typography
@@ -193,12 +181,33 @@ interface InformationProps {
               display: "flex",
               justifyContent: "center",
               pt: "1rem",
-              pb: "3rem",
+              pb: "1rem",
+         
+              "& button": {
+                fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
+                color: "#fff",
+                background: "#000",
+                textTransform: "capitalize",
+                fontSize: "16px",
+                border: "1px solid #000",
+                height: "38px",
+                width: "38px",
+                fontWeight: "400",
+                px: "1rem",
+                borderRadius: "0",
+                position: "relative",
+                top: "-3px",
+                right: "-3px",
+                transition: "0.5s all",
+              },
               "& .btn_wrap": {
-                background: "#000 !important",
+                background: "#000",
+                transition: "0.5s all",
                 "&:hover": {
                   "& button": {
-                    background: "#E25822 !important",
+                    top: "0",
+                    right: "0",
+                    background: "#000",
                   },
                 },
               },
@@ -220,11 +229,54 @@ interface InformationProps {
             </Box>
           </Box>
         </Box>
-        <Box>
-          <PoolComponent/>
-        </Box>
+        <Box sx={{
+          "& .MuiButtonBase-root":{
+            color:"#000",
+            display:"flex",
+            flexDirection:"row",
+            justifyContent:"center",
+            gap:"5px",
+            fontFamily: `${Press_Start_2P_font.style.fontFamily}`,
+            p:"10px 15px",
+            fontSize:"12px !important",
+            fontWeight:"400 !important",
+            textTransform:"capitalize",
+            minHeight:"auto"
+          },
+          "& .MuiTabs-indicator":{
+            backgroundColor:"#E25822",
+          },
+          "& .MuiTabs-flexContainer":{
+            overflow:"auto"
+          },
+          "& .MuiTab-root.Mui-selected":{
+            color:"#E25822",
+          },
+          "& .MuiTouchRipple-root":{
+            display:"none",
+          },
+        }}>
+    
+      <Tabs value={tabIndex} onChange={handleChange}>
+      <Tab icon={<LiveTvIcon />} label="Live" />
+        <Tab icon={<SportsEsportsIcon />} label="Play" />
+        <Tab icon={<HistoryIcon />} label="History" />
+      </Tabs>
       </Box>
+      <TabPanel value={tabIndex} index={0}>
+      <PoolComponent tabIndex={tabIndex}/>
+      </TabPanel>
+      <TabPanel value={tabIndex} index={1}>
+      <PoolComponent tabIndex={tabIndex}/>
+      </TabPanel>
+      <TabPanel value={tabIndex} index={2}>
+      <PoolComponent tabIndex={tabIndex}/>
+      </TabPanel>
     </Box>
+       
+       
+      </Box>
+
   );
 };
 

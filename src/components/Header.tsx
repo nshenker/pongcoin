@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Courier_Prime, IBM_Plex_Mono, Press_Start_2P } from "next/font/google";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import WalletConnectButton from "./WalletConnectButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { getTokenBalance } from "@/utils/callFucntions";
@@ -16,6 +16,7 @@ import wallet_avatar from "@/assets/wallet_avatar.svg"
 import Link from "next/link";
 import axios from "axios"
 import { API_URL } from "@/utils/config";
+import { ContractContext } from "@/contexts/ContractContext";
 // Font configurations
 const courierPrimeFont = Courier_Prime({
   variable: "--font-Courier_Prime-sans",
@@ -36,13 +37,25 @@ const IBM_Plex_Mono_Font = IBM_Plex_Mono({
 
 const Header = () => {
   const [open, setOpen] = React.useState(false);
-
-    const { publicKey } = useWallet();
+  const {solBalance,setSolBalance}=useContext(ContractContext)
+  
+    const { publicKey,disconnect } = useWallet();
     const { connection } = useConnection();
   const [tokenBalance,setTokenBalance] = useState(0)
-  const [solBalance,setSolBalance] = useState("0")
+  // const [solBalance,setSolBalance] = useState("0")
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      setSolBalance("0");
+      setTokenBalance(0);
+      setOpen(false);
+      console.log("Wallet disconnected");
+    } catch (error) {
+      console.error("Error disconnecting wallet:", error);
+    }
+  };
 
   const createUser = async () => {
     
@@ -109,13 +122,13 @@ const Header = () => {
       getBalance();
     }
   },[publicKey,connection])
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current!.focus();
-    }
+  // React.useEffect(() => {
+  //   if (prevOpen.current === true  open === false && anchorRef.current) {
+  //     anchorRef.current.focus();
+  //   }
 
-    prevOpen.current = open;
-  }, [open]);
+  //   prevOpen.current = open;
+  // }, [open]);
 
   return (
     <Box
@@ -321,6 +334,7 @@ const Header = () => {
                                 width: "auto !important",
                                 background: "#E25822 !important",
                               }}
+                              onClick={handleDisconnect}
                             >
                               Disconnect
                             </Button>
