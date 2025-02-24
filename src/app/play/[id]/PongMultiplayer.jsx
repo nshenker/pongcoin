@@ -18,6 +18,7 @@ const [showModal,setShowModal] = useState(true);
 const [showButton,setShowButton] = useState(true);
 const [showLink,setShowLink] = useState(false);
 const [ws,setws] = useState();
+const [hideLeavegame,setHideLeavegame] = useState(false);
 
 // const WS_URL = 'http://localhost:3330'
 const WS_URL = 'https://d2qj5dvu6ct4if.cloudfront.net'
@@ -59,6 +60,8 @@ socket.on("playerNo", (newPlayerNo) => {
 
 socket.on("over", (data) => {
     // alert("over")
+    setHideLeavegame(true)
+
     if(data.winnner){
         setmessage("You have Won!");
     }
@@ -81,6 +84,7 @@ socket.on("startingGame", () => {
 socket.on("startedGame", (room) => {
     console.log(room);
     setShowModal(false)
+    setHideLeavegame(true)
 
     roomID = room.id;
     setmessage("");
@@ -131,9 +135,9 @@ socket.on("updateGame", (room) => {
 });
 
 socket.on("endGame", (room) => {
-    // isGameStarted = false;
+    isGameStarted = false;
     setShowModal(true)
-
+    setHideLeavegame(true)
     setmessage(`${room.winner === playerNo ? "You have Won!" : "You have Lost!"}`);
 
     socket.emit("leave", roomID);
@@ -222,7 +226,7 @@ return (
             </Box>
             }
             {
-                !isGameStarted &&
+                !hideLeavegame &&
                    <Box className="btn_wrap" sx={{margin: "10% auto",width:"auto",display:"inline-block"}}>
             <button style={{width: "auto"}}  onClick={() => setIsDialogOpen(true)}>
                LEAVE GAME
