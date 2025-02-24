@@ -7,6 +7,9 @@ import logo from "../../../assets/logo.png";
 import BottomSection from "@/pages/LandingPage/BottomSection";
 import dynamic from 'next/dynamic'
 import Information from "./Information";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import { API_URL } from "@/utils/config";
 
 const PongComponent = dynamic(
   () => import('./PongComponent'),
@@ -68,7 +71,34 @@ const page = () => {
   useEffect(() => {
     togglePlay();
   }, [isPlaying]);
-
+  const params = useParams<{ id?: string }>();
+  const id = params?.id; // U
+  const [data,setData] = useState({});
+  
+  const getPoolData = async () => {
+  
+    
+    try {
+      const res = await axios.get(`${API_URL}/get/pool`,{
+        headers: {
+          "x-access-token": id,
+        },
+      });
+  
+      if (res.status === 200) {       
+           
+        const fetchedData = res.data.data;
+  
+        setData(fetchedData);
+      }
+  
+    } catch (err) {
+       
+    }
+  }
+  useEffect(()=>{
+      getPoolData()
+  },[id])
   return (
     <Box>
       <Box textAlign={"center"}>
@@ -95,6 +125,9 @@ const page = () => {
             "& canvas": {
               width: "100% !important",
               height: { sm: "auto !important", xs: "100% !important" },
+            },
+            "& p": {
+              fontFamily: `${Press_Start_2P_font.style.fontFamily}`,
             },
             "& button": {
               fontFamily: `${Press_Start_2P_font.style.fontFamily}`,
@@ -142,7 +175,7 @@ const page = () => {
             </Box>
           </Box>
           {/* <PongComponent cpuMode={true} /> */}
-          <PongMultiplayer />
+          <PongMultiplayer data={data}/>
         </Box>
       )}
       <audio ref={audioRef} src={"/game-sound.mp3"} />

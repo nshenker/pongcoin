@@ -22,18 +22,55 @@ const IBM_Plex_Mono_Font = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: "400",
 });
-const PoolComponent: React.FC = () => {
+interface PoolComponentProps {
+  tabIndex: number;
+}
+const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
+  const [user, setUser] = useState({});
+  const getMe = async () => {
+    const access_token = window.localStorage.getItem("token");
+
+    try {
+      const res = await axios.get(`${API_URL}/get/me`, {
+        headers: {
+          "x-access-token": access_token,
+        },
+      });
+
+      if (res.status === 200) {
+        setUser(res.data.data);
+      }
+    } catch (err) {}
+  };
+  useEffect(() => {
+      getMe();
+  }, []);
 
   const [data,setData] = useState([]);
 
   const getData = async () => {
+    
     const access_token = localStorage.getItem("token")
     
     try {
       const res = await axios.get(`${API_URL}/get/pools`);
 
       if (res.status === 200) {        
-        setData(res.data.data)
+        const fetchedData = res.data.data;
+
+        // Apply filtering based only on status
+        const filteredData = fetchedData.filter((item:any) => {
+          if (tabIndex === 0) {
+            return item.status === 0; // "Live" tab - status 0
+          } else if (tabIndex === 1) {
+            return item.status !== 2; // "Play" tab - status NOT 2
+          } else if (tabIndex === 2) {
+            return item.status === 2; // "History" tab - status 2
+          }
+          return false;
+        });
+  
+        setData(filteredData);
       }
   
     } catch (err) {
@@ -42,9 +79,11 @@ const PoolComponent: React.FC = () => {
   }
 
 
+
   useEffect(() => {
-    getData();
-  },[])
+    setData([])
+  getData();
+  },[tabIndex])
 
   return (
     <TableContainer
@@ -54,10 +93,10 @@ const PoolComponent: React.FC = () => {
         overflow: "auto",
         height: "200px",
         background: "#FAF3E0",
-        scrollbarWidth: "none", // For Firefox
-        "&::-webkit-scrollbar": {
-          display: "none", // Hide scrollbar in Webkit browsers (Chrome, Safari)
-        },
+        // scrollbarWidth: "none", // For Firefox
+        // "&::-webkit-scrollbar": {
+        //   display: "none", // Hide scrollbar in Webkit browsers (Chrome, Safari)
+        // },
         "& th,td": {
           fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
         },
@@ -79,7 +118,7 @@ const PoolComponent: React.FC = () => {
           fontSize: "13px",
           border: "1px solid #E25822",
           height: "36px",
-          width: "120px",
+          width: "auto",
           fontWeight: "600",
           px: "1rem",
           borderRadius: "0",
@@ -122,8 +161,8 @@ const PoolComponent: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <PoolSingle row={row} />
+          {data?.map((row,index) => (
+            <PoolSingle row={row} key={index} tabIndex={tabIndex} user={user}/>
           ))}
         </TableBody>
       </Table>

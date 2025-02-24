@@ -2,15 +2,19 @@ import { io } from "socket.io-client";
 import Ball from "./ball.js";
 import Player from "./player.js";
 import { useEffect, useRef, useState } from "react";
+import { Box } from "@mui/material";
+import { useParams } from "next/navigation";
+import ConfirmationPopup from "@/components/ConfirmationPopup";
 
 
-function App() {
+function App({data}) {
 
     
 const startBtn = useRef();
 const canvas = useRef();
 const [message,setmessage] = useState();
 const [showModal,setShowModal] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 const [showButton,setShowButton] = useState(true);
 const [ws,setws] = useState();
 
@@ -173,26 +177,44 @@ function startGame() {
     }
 }
 
+// console.log(data);
 
 return (
-    <div class="container">
+    <Box class="container">
     
     <div class="game" style={{position: "relative"}}>
         <canvas id="canvas" ref={canvas} width="800"  style={{ background: "black" }} height="500"></canvas>
         {
             showModal &&
-            <div  style={{background: "#fff" , padding: "10px" , width: "500px" , height: "auto" , minHeight: "20%" ,  maxHeight: "50%" , position: "absolute", top: "25%" , left: "30%"}}>
-            {message != "" && <p id="message" style={{textAlign: "center", paddingTop: "10%", fontSize: "25px"}}>{message}</p> }
+            <Box  sx={{background: "#fff" , padding: "10px" , width: {sm:"500px",xs:"90%"} , height: "auto", position: "absolute", top: "25%" , left: "50%",transform:"translateX(-50%)",textAlign:"center"}}>
+            {message && <p id="message" style={{textAlign: "center", paddingTop: "10%",paddingBottom: "10%", fontSize: "16px"}}>{message}</p> }
             {
                 showButton &&
-            <button style={{width: "100%" , margin: "10% auto" }}  onClick={() => startGame()}>
+                   <Box className="btn_wrap" sx={{margin: "10% auto",width:"auto",display:"inline-block"}}>
+            <button style={{width: "auto"}}  onClick={() => startGame()}>
                 START GAME
             </button>    
+            </Box>
             }
-            </div>    
+            {
+                !data?.gameStarted &&
+                   <Box className="btn_wrap" sx={{margin: "10% auto",width:"auto",display:"inline-block"}}>
+            <button style={{width: "auto"}}  onClick={() => setIsDialogOpen(true)}>
+               LEAVE GAME
+            </button>    
+            </Box>
+            }
+            </Box>    
         }
     </div>
-</div>
+        {isDialogOpen && (
+          <ConfirmationPopup
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+            poolId={data?._id}
+          />
+        )}
+</Box>
 )
 }
 export default App;
