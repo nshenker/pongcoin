@@ -16,6 +16,7 @@ const [message,setmessage] = useState();
 const [showModal,setShowModal] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 const [showButton,setShowButton] = useState(true);
+const [showLink,setShowLink] = useState(false);
 const [ws,setws] = useState();
 
 // const WS_URL = 'http://localhost:3330'
@@ -46,19 +47,35 @@ setws(socket)
 socket.on("playerNo", (newPlayerNo) => {
     // console.log(newPlayerNo);
     playerNo = newPlayerNo;
+
+    setInterval(() => {
+        const access_token = localStorage.getItem("gameToken")
+            socket.emit("online", { 
+            token: access_token
+        }) 
+        },1000)
+    
 });
+
+socket.on("over", (data) => {
+    // alert("over")
+    if(data.winnner){
+        setmessage("You have Won!");
+    }
+    else{
+        setmessage("You have Lost!");
+
+    }
+
+    setShowLink(data.hash)
+
+
+})
+
 
 socket.on("startingGame", () => {
     isGameStarted = true;
     setmessage("We are going to start the game...");
-
-    setInterval(() => {
-    const access_token = localStorage.getItem("gameToken")
-        socket.emit("online", { 
-        token: access_token
-    }) 
-    })
-
 });
 
 socket.on("startedGame", (room) => {
@@ -117,7 +134,7 @@ socket.on("endGame", (room) => {
     isGameStarted = false;
     setShowModal(true)
 
-    setmessage(`${room.winner === playerNo ? "You are Winner!" : "You are Loser!"}`);
+    setmessage(`${room.winner === playerNo ? "You have Won!" : "You have Lost!"}`);
 
     socket.emit("leave", roomID);
 
@@ -187,7 +204,15 @@ return (
         {
             showModal &&
             <Box  sx={{background: "#fff" , padding: "10px" , width: {sm:"500px",xs:"90%"} , height: "auto", position: "absolute", top: "25%" , left: "50%",transform:"translateX(-50%)",textAlign:"center"}}>
-            {message && <p id="message" style={{textAlign: "center", paddingTop: "10%",paddingBottom: "10%", fontSize: "16px"}}>{message}</p> }
+            {message && 
+            <>            
+            <p id="message" style={{textAlign: "center", paddingTop: "10%",paddingBottom: "10%", fontSize: "16px"}}>{message}</p> 
+            {
+                showLink &&
+                <a  style={{textAlign: "center", paddingTop: "10%",paddingBottom: "10%", fontSize: "14px"}} href={`https://explorer.solana.com/tx/${showLink}?cluster=devnet`}>View Transaction</a> 
+            }
+            </>
+            }
             {
                 showButton &&
                    <Box className="btn_wrap" sx={{margin: "10% auto",width:"auto",display:"inline-block"}}>

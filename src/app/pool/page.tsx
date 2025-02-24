@@ -47,6 +47,7 @@ const page = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined" && showGame) {
+      window.localStorage.setItem("gameToken","null")
       setIsPlaying(true);
       const handleKeyDown = (event: { preventDefault: () => void }) => {
         event.preventDefault();

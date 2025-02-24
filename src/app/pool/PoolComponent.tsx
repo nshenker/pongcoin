@@ -42,9 +42,7 @@ const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
       }
     } catch (err) {}
   };
-  useEffect(() => {
-      getMe();
-  }, []);
+ 
 
   const [data,setData] = useState([]);
 
@@ -78,12 +76,18 @@ const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
     }
   }
 
-
-
   useEffect(() => {
-    setData([])
-  getData();
-  },[tabIndex])
+    // getData();  
+    getMe();
+    getData();
+
+    setInterval(() => {
+    },30000)
+  },[])
+
+  // useEffect(() => {
+  //   // setData([])
+  // },[tabIndex])
 
   return (
     <TableContainer

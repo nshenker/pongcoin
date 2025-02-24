@@ -31,6 +31,7 @@ const PoolSingle = ({ row, tabIndex,user }) => {
   const { publicKey, sendTransaction } = useWallet();
   const [joinPoolLoading, setJoinPoolLoading] = useState(false);
   const [showRetry, setShowRetry] = useState(false);
+  const [txnHash, setTxnHash] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -103,7 +104,8 @@ const PoolSingle = ({ row, tabIndex,user }) => {
         await connection.getLatestBlockhash()
       ).blockhash;
 
-      signedTransaction = await sendTransaction(transaction, connection);
+       signedTransaction = await sendTransaction(transaction, connection);
+      // alert(signedTransaction.toString())
       setTxnHash(signedTransaction.toString());
     }
 
@@ -182,7 +184,9 @@ const PoolSingle = ({ row, tabIndex,user }) => {
 
   return (
     <>
-    {tabIndex === 0 &&row?.creatorJoined && row?.online ? (
+
+
+    {tabIndex === 0 && row?.creatorJoined && row?.online && row?.status == 0 ? (
       <TableRow key={row._id}>
         <TableCell>{row._id}</TableCell>
         <TableCell>{creator.username}</TableCell>
@@ -196,7 +200,7 @@ const PoolSingle = ({ row, tabIndex,user }) => {
                   {publicKey ? (showRetry ? "Retry" : "Join") : "Connect Wallet"}
                 </Button>
               </Box>
-              {!row?.gameStarted && (
+              {!row?.gameStarted && ((row?.creator == user.id) || (row?.opponentJoined && row?.opponent == user.id))  && (
                 <Box className="btn_wrap" onClick={() => setIsDialogOpen(true)}>
                   <Button>Leave</Button>
                 </Box>
