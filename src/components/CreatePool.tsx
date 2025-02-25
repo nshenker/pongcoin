@@ -81,7 +81,7 @@ export default function CreatePoolDialog({
   const [poolCreated, setPoolCreated] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [joinPoolLoading, setJoinPoolLoading] = useState(false);
-  const [txnHash, setTxnHash] = useState("");
+  const [txnHash, setTxnHash] = useState(false);
   const [showRetry, setShowRetry] = useState(false);
 
   const [poolId, setPoolId] = useState(0);
@@ -143,38 +143,40 @@ export default function CreatePoolDialog({
 
     const signedTransaction = await sendTransaction(transaction, connection);
     setTxnHash(signedTransaction.toString());
-
-    try {
-      const res = await axios.post(
-        `${API_URL}/join/pool`,
-        {
-          poolId: poolId,
-          txnHash: signedTransaction.toString(),
-        },
-        {
-          headers: {
-            "x-access-token": access_token,
+    setTimeout(async () => {
+      try {
+        const res = await axios.post(
+          `${API_URL}/join/pool`,
+          {
+            poolId: poolId,
+            txnHash: signedTransaction.toString(),
           },
+          {
+            headers: {
+              "x-access-token": access_token,
+            },
+          }
+        );
+  
+        if (res.status === 200) {
+          setPoolCreated(true);
+          setJoinPoolLoading(false);
+          localStorage.setItem("gameToken", res.data.gameToken);
+          window.location.href = `/play/${res.data.gameToken}`;
+          setPoolCreated(false);
         }
-      );
-
-      if (res.status === 200) {
-        setPoolCreated(true);
-        setJoinPoolLoading(false);
-        localStorage.setItem("gameToken", res.data.gameToken);
-        window.location.href = `/play/${res.data.gameToken}`;
-        setPoolCreated(false);
+        if (res.status === 401) {
+          setShowRetry(true);
+          setJoinPoolLoading(false);
+        }
+      } catch (err) {
+        if (txnHash) {
+          setShowRetry(true);
+          setJoinPoolLoading(false);
+        }
       }
-      if (res.status === 401) {
-        setShowRetry(true);
-        setJoinPoolLoading(false);
-      }
-    } catch (err) {
-      if (txnHash) {
-        setShowRetry(true);
-        setJoinPoolLoading(false);
-      }
-    }
+    }, 3000);
+  
   };
 
   const retry = async () => {
