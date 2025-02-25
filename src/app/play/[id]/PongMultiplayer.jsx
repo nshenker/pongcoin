@@ -245,7 +245,7 @@ return (
             </Box>
             }
             {
-                !hideLeavegame &&
+                !hideLeavegame && data?.status < 1 && !data?.gameStarted &&
                    <Box className="btn_wrap" sx={{margin: "10% auto",width:"auto",display:"inline-block"}}>
             <button style={{width: "auto"}}  onClick={() => setIsDialogOpen(true)}>
                LEAVE GAME
