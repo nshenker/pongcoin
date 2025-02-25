@@ -109,37 +109,40 @@ const PoolSingle = ({ row, tabIndex,user }) => {
       setTxnHash(signedTransaction.toString());
     }
 
-    const access_token = window.localStorage.getItem("token");
+    setTimeout(async () => {
+      const access_token = window.localStorage.getItem("token");
 
-    try {
-      const res = await axios.post(
-        `${API_URL}/join/pool`,
-        {
-          poolId: row._id,
-          txnHash: signedTransaction.toString(),
-        },
-        {
-          headers: {
-            "x-access-token": access_token,
+      try {
+        const res = await axios.post(
+          `${API_URL}/join/pool`,
+          {
+            poolId: row._id,
+            txnHash: signedTransaction.toString(),
           },
+          {
+            headers: {
+              "x-access-token": access_token,
+            },
+          }
+        );
+  
+        if (res.status === 200) {
+          setJoinPoolLoading(false)
+          window.localStorage.setItem("gameToken", res.data.gameToken);
+          window.location.href = `/play/${res.data.gameToken}`;
         }
-      );
-
-      if (res.status === 200) {
-        setJoinPoolLoading(false)
-        window.localStorage.setItem("gameToken", res.data.gameToken);
-        window.location.href = `/play/${res.data.gameToken}`;
+        if (res.status === 401) {
+          setShowRetry(true);
+          setJoinPoolLoading(false)
+        }
+      } catch (err) {
+        if (txnHash) {
+          setShowRetry(true);
+          setJoinPoolLoading(false)
+        }
       }
-      if (res.status === 401) {
-        setShowRetry(true);
-        setJoinPoolLoading(false)
-      }
-    } catch (err) {
-      if (txnHash) {
-        setShowRetry(true);
-        setJoinPoolLoading(false)
-      }
-    }
+    }, 3000);
+   
   };
 
   const retry = async () => {
