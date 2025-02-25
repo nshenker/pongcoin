@@ -107,6 +107,9 @@ socket.on("startedGame", (room) => {
                     playerNo: playerNo,
                     direction: 'up'
                 })
+                player1.y += 60;
+                draw();
+
             } else if (e.keyCode === 40) {
                 console.log("player move 1 down")
                 socket.emit("move", {
@@ -114,6 +117,9 @@ socket.on("startedGame", (room) => {
                     playerNo: playerNo,
                     direction: 'down'
                 })
+                player2.y += 60;
+                draw();
+
             }
         }
     });
