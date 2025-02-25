@@ -108,10 +108,10 @@ socket.on("startedGame", (room) => {
                     direction: 'up'
                 })
                 if(playerNo == 1){
-                    player1.y += 30;
+                    player1.y -= 30;
                 }
                 else{
-                    player2.y += 30;
+                    player2.y -= 30;
                 }
                 draw();
 
@@ -123,10 +123,10 @@ socket.on("startedGame", (room) => {
                     direction: 'down'
                 })
                 if(playerNo == 1){
-                    player1.y -= 30;
+                    player1.y += 30;
                 }
                 else{
-                    player2.y -= 30;
+                    player2.y += 30;
                 }
                 draw();
 
