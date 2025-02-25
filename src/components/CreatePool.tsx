@@ -81,7 +81,7 @@ export default function CreatePoolDialog({
   const [poolCreated, setPoolCreated] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [joinPoolLoading, setJoinPoolLoading] = useState(false);
-  const [txnHash, setTxnHash] = useState(null);
+  const [txnHash, setTxnHash] = useState("");
   const [showRetry, setShowRetry] = useState(false);
 
   const [poolId, setPoolId] = useState(0);
@@ -157,7 +157,7 @@ export default function CreatePoolDialog({
             },
           }
         );
-  
+        console.log(res)
         if (res.status === 200) {
           setPoolCreated(true);
           setJoinPoolLoading(false);
