@@ -107,7 +107,12 @@ socket.on("startedGame", (room) => {
                     playerNo: playerNo,
                     direction: 'up'
                 })
-                player1.y += 60;
+                if(playerNo == 1){
+                    player1.y += 30;
+                }
+                else{
+                    player2.y += 30;
+                }
                 draw();
 
             } else if (e.keyCode === 40) {
@@ -117,7 +122,12 @@ socket.on("startedGame", (room) => {
                     playerNo: playerNo,
                     direction: 'down'
                 })
-                player2.y += 60;
+                if(playerNo == 1){
+                    player1.y -= 30;
+                }
+                else{
+                    player2.y -= 30;
+                }
                 draw();
 
             }
@@ -128,9 +138,12 @@ socket.on("startedGame", (room) => {
 });
 
 socket.on("updateGame", (room) => {
-    player1.y = room.players[0].y;
-    player2.y = room.players[1].y;
-
+    if(playerNo == 1){
+        player2.y = room.players[1].y;
+    }
+    else{
+        player1.y = room.players[0].y;
+    }
     player1.score = room.players[0].score;
     player2.score = room.players[1].score;
 
