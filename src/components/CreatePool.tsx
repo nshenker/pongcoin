@@ -81,7 +81,7 @@ export default function CreatePoolDialog({
   const [poolCreated, setPoolCreated] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [joinPoolLoading, setJoinPoolLoading] = useState(false);
-  const [txnHash, setTxnHash] = useState(false);
+  const [txnHash, setTxnHash] = useState(null);
   const [showRetry, setShowRetry] = useState(false);
 
   const [poolId, setPoolId] = useState(0);
