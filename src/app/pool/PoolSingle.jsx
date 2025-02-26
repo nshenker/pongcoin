@@ -274,14 +274,10 @@ const PoolSingle = ({ row, tabIndex,user }) => {
             <Box sx={{ justifyContent: "start", display: "flex", gap: "1rem" }}>
               <Box className="btn_wrap" onClick={() => joinPool()}>
                 <Button>
-                  {publicKey ? (showRetry ? "Retry" : "Join") : "Connect Wallet"}
+                  {row?.winnerRewardedHash && <a href={`https://explorer.solana.com/tx/${winnerRewardedHash}?cluster=devnet`} target="_blank" >View Txn</a> }
                 </Button>
               </Box>
-              {!row?.gameStarted && (
-                <Box className="btn_wrap" onClick={() => setIsDialogOpen(true)}>
-                  <Button>Leave</Button>
-                </Box>
-              )}
+               
             </Box>
           ) : (
             <Box className="btn_wrap" sx={{ display: "inline-block" }}>
