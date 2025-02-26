@@ -108,10 +108,12 @@ socket.on("startedGame", (room) => {
                     direction: 'up'
                 })
                 if(playerNo == 1){
-                    player1.y -= 20;
+                    player1.y -= 10;
+                    player1.y -= 10;
                 }
                 else{
-                    player2.y -= 20;
+                    player2.y -= 10;
+                    player2.y -= 10;
                 }
                 draw();
 
@@ -123,10 +125,12 @@ socket.on("startedGame", (room) => {
                     direction: 'down'
                 })
                 if(playerNo == 1){
-                    player1.y += 20;
+                    player1.y += 10;
+                    player1.y += 10;
                 }
                 else{
-                    player2.y += 20;
+                    player2.y += 10;
+                    player2.y += 10;
                 }
                 draw();
 
@@ -229,16 +233,16 @@ return (
             <Box  sx={{background: "#fff" , padding: "10px" , width: {sm:"500px",xs:"90%"} , height: "auto", position: "absolute", top: "25%" , left: "50%",transform:"translateX(-50%)",textAlign:"center"}}>
             {message && 
             <>            
-            <p id="message" style={{textAlign: "center", paddingTop: "10%",paddingBottom: "10%", fontSize: "16px"}}>{message}</p> 
+            <p id="message" style={{textAlign: "center", paddingTop: "10%",paddingBottom: "5%", fontSize: "16px"}}>{message}</p> 
             {
                 showLink &&
-                <a  style={{textAlign: "center", paddingTop: "10%",paddingBottom: "10%", fontSize: "14px"}} href={`https://explorer.solana.com/tx/${showLink}?cluster=devnet`}>View Transaction</a> 
+                <a  style={{textAlign: "center", color: "blue", paddingTop: "5%",paddingBottom: "20%", fontSize: "14px"}} target="_blank" href={`https://explorer.solana.com/tx/${showLink}?cluster=devnet`}>View Transaction</a> 
             }
             </>
             }
             {
                 showButton &&
-                   <Box className="btn_wrap" sx={{margin: "10% 1% 0 0%",width:"auto",display:"inline-block"}}>
+                   <Box className="btn_wrap" sx={{margin: "10% 1% 10% 0%",width:"auto",display:"inline-block"}}>
             <button style={{width: "auto"}}  onClick={() => startGame()}>
                 START GAME
             </button>    
