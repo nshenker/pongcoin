@@ -247,8 +247,7 @@ export default function UpdateProfileDialog({
                 <Typography>{message}</Typography>
                 </Box>
           }
-          {
-          userName &&             
+                     
               <Box>
                 <p
                   style={{
@@ -305,8 +304,7 @@ export default function UpdateProfileDialog({
                   </Box>
                 </Box>
               </Box>
-        
-} 
+ 
            
          
         </Box>
