@@ -274,7 +274,7 @@ const PoolSingle = ({ row, tabIndex,user }) => {
             <Box sx={{ justifyContent: "start", display: "flex", gap: "1rem" }}>
               <Box className="btn_wrap" onClick={() => joinPool()}>
                 <Button>
-                  {row?.winnerRewardedHash && <a href={`https://explorer.solana.com/tx/${winnerRewardedHash}?cluster=devnet`} target="_blank" >View Txn</a> }
+                  {row?.winnerRewardedHash && <a href={`https://explorer.solana.com/tx/${row?.winnerRewardedHash}?cluster=devnet`} target="_blank" >View Txn</a> }
                 </Button>
               </Box>
                
