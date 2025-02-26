@@ -142,12 +142,16 @@ socket.on("startedGame", (room) => {
 });
 
 socket.on("updateGame", (room) => {
-    if(playerNo == 1){
-        player2.y = room.players[1].y;
-    }
-    else{
-        player1.y = room.players[0].y;
-    }
+    // if(playerNo == 1){
+    //     player2.y = room.players[1].y;
+    // }
+    // else{
+    //     player1.y = room.players[0].y;
+    // }
+    player1.y = room.players[0].y;
+    player2.y = room.players[1].y;
+
+
     player1.score = room.players[0].score;
     player2.score = room.players[1].score;
 
