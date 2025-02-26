@@ -265,7 +265,7 @@ export default function UpdateProfileDialog({
                       className="bin1"
                       fullWidth
                       type="text"
-                      placeholder="0.0"
+                      placeholder="XYZ"
                       variant="standard"
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
