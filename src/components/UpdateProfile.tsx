@@ -80,7 +80,7 @@ export default function UpdateProfileDialog({
   const [amount, setAmount] = useState("0");
   const [profileUpdated, setProfileUpdated] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);  
-  const [userName, setUserName] = useState(localStorage.getItem("username"));
+  const [userName, setUserName] = useState(window.localStorage.getItem("username"));
   const [showRetry, setShowRetry] = useState(false);
   const [message, setMessage] = useState("");
   

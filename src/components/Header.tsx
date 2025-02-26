@@ -17,7 +17,15 @@ import Link from "next/link";
 import axios from "axios"
 import { API_URL } from "@/utils/config";
 import { ContractContext } from "@/contexts/ContractContext";
-import UpdateProfileDialog from "./UpdateProfile";
+ 
+import dynamic from 'next/dynamic'
+
+
+const UpdateProfileDialog = dynamic(
+  () => import('./UpdateProfile'),
+  { ssr: false }
+)
+
 // Font configurations
 const courierPrimeFont = Courier_Prime({
   variable: "--font-Courier_Prime-sans",
@@ -307,7 +315,7 @@ const Header = () => {
                     >
                       <Typography>Username:</Typography>
                       <Typography onClick={() => setIsDialogOpen(true)} fontWeight={"600"} sx={{textDecoration: "underline"}}>
-                        @{localStorage.getItem("username")}
+                        @{window.localStorage.getItem("username")}
                       </Typography>
                     </Box>
                        <Box
