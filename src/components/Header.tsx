@@ -17,6 +17,7 @@ import Link from "next/link";
 import axios from "axios"
 import { API_URL } from "@/utils/config";
 import { ContractContext } from "@/contexts/ContractContext";
+import UpdateProfileDialog from "./UpdateProfile";
 // Font configurations
 const courierPrimeFont = Courier_Prime({
   variable: "--font-Courier_Prime-sans",
@@ -38,6 +39,7 @@ const IBM_Plex_Mono_Font = IBM_Plex_Mono({
 const Header = () => {
   const [open, setOpen] = React.useState(false);
   const {solBalance,setSolBalance}=useContext(ContractContext)
+    const [isDialogOpen,setIsDialogOpen] = useState(false);
   
     const { publicKey,disconnect } = useWallet();
     const { connection } = useConnection();
@@ -67,6 +69,7 @@ const Header = () => {
       if (res.status === 200) {
         console.log(res);
         localStorage.setItem("token", res.data.token);       
+        localStorage.setItem("username", res.data.data.username);       
       }
   
     } catch (err) {
@@ -276,20 +279,38 @@ const Header = () => {
                         aria-labelledby="composition-button"
                         onKeyDown={handleListKeyDown}
                       >
-                        <Box
-                          sx={{
-                            p: "1rem",
-                            textAlign: "center",
-                            "& select": {
-                              p: "10px",
-                              background: "transparent",
-                              borderRadius: "0",
-                              "&:focus-visible": {
-                                outline: "0 !important",
-                              },
+                      <Box
+                        sx={{
+                          p: "1rem",
+                          textAlign: "center",
+                          "& select": {
+                            p: "10px",
+                            background: "transparent",
+                            borderRadius: "0",
+                            "&:focus-visible": {
+                              outline: "0 !important",
                             },
-                          }}
-                        > <Box
+                          },
+                        }}
+                      > 
+                      <Box
+                      sx={{
+                        "& p": {
+                          fontSize: "16px",
+                          fontFamily: IBM_Plex_Mono_Font.style.fontFamily,
+                        },
+                        pt: "1rem",
+                        display: "flex",
+                        cursor: "pointer",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography>Username:</Typography>
+                      <Typography onClick={() => setIsDialogOpen(true)} fontWeight={"600"} sx={{textDecoration: "underline"}}>
+                        @{localStorage.getItem("username")}
+                      </Typography>
+                    </Box>
+                       <Box
                         sx={{
                           "& p": {
                             fontSize: "16px",
@@ -366,6 +387,7 @@ const Header = () => {
           </Box>
         </Box>
       </>
+      <UpdateProfileDialog   isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />
     </Box>
   );
 };
