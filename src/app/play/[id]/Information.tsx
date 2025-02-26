@@ -45,7 +45,7 @@ interface InformationProps {
     >
       <Box
         sx={{
-          py: { sm: "4rem", xs: "4rem" },
+          py: { sm: "1rem", xs: "1rem" },
           "& .text_1": {
             fontSize: { sm: "22px", xs: "22px" },
             fontFamily: vt323Font.style.fontFamily,
@@ -78,7 +78,7 @@ interface InformationProps {
             precision and strategy lead to victory.
           </Typography>
         </Box>
-        <Box pt={"1rem"}>
+        <Box pt={"0rem"}>
           <Typography className="text_1">
             <Typography component={"img"} src={control.src} /> How to Play?
           </Typography>
@@ -274,7 +274,7 @@ interface InformationProps {
                 </Box>
               </Grid>
             </Grid>
-            <Grid container spacing={1} mt={"0.5rem"}>
+            {/* <Grid container spacing={1} mt={"0.5rem"}>
               <Grid item lg={4} xs={5} alignSelf={"center"}>
                 <Typography
                   component={"li"}
@@ -308,7 +308,7 @@ interface InformationProps {
                   </Button>
                 </Box>
               </Grid>
-            </Grid>
+            </Grid> */}
           </Grid>
           <Grid item sm={6} xs={12}>
             <Typography className="text_1" pb={"0.5rem"}>

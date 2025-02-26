@@ -73,7 +73,7 @@ const page = () => {
   }, [isPlaying]);
   const params = useParams<{ id?: string }>();
   const id = params?.id; // U
-  const [data,setData] = useState({});
+  const [data,setData] = useState<any>({});
   
   const getPoolData = async () => {
   
@@ -114,13 +114,22 @@ const page = () => {
         </Typography>
       </Box>
       <Header />
+      {
+        data?._id &&
+      <Box textAlign={"center"} >
+        <Typography sx={{width: "auto", background: "white",p: "10px"}}>
+       <strong>Pool ID:</strong> {data?._id}
+        </Typography>
+      </Box>
+      }
+
       {!showGame ? (
         <Information setShowGame={setShowGame} />
       ) : (
         <Box
           sx={{
             width: "80%",
-            margin: "3rem auto",
+            margin: "0rem auto 3rem",
             position: "relative",
             "& canvas": {
               width: "100% !important",

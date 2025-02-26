@@ -157,7 +157,7 @@ export default function CreatePoolDialog({
             },
           }
         );
-        console.log(res)
+      
         if (res.status === 200) {
           setPoolCreated(true);
           setJoinPoolLoading(false);
@@ -169,11 +169,14 @@ export default function CreatePoolDialog({
           setShowRetry(true);
           setJoinPoolLoading(false);
         }
-      } catch (err) {
-        if (txnHash) {
+      } catch (err:any) {
+        if (err?.status == 401 && signedTransaction.toString()) {
           setShowRetry(true);
           setJoinPoolLoading(false);
         }
+      else{
+        setJoinPoolLoading(false);
+      }
       }
     }, 3000);
   
@@ -219,11 +222,16 @@ export default function CreatePoolDialog({
     if (Number(enteredValue) < 0) return;
     setAmount(enteredValue);
   };
-
+  const close = () => {
+    setAmount("0")
+    setPoolCreated(false);
+    setJoinPoolLoading(false);
+    setIsDialogOpen(false);
+  }
   return (
-    <Dialog
-      onClose={() => setIsDialogOpen(false)}
+    <Dialog 
       disableScrollLock
+      
       aria-labelledby="customized-dialog-title"
       open={isDialogOpen}
       sx={{
@@ -289,7 +297,7 @@ export default function CreatePoolDialog({
         },
       }}
     >
-      <BootstrapDialogTitle onClose={() => setIsDialogOpen(false)}>
+      <BootstrapDialogTitle onClose={() => close()}>
         Create
       </BootstrapDialogTitle>
       <DialogContent dividers>
@@ -326,46 +334,7 @@ export default function CreatePoolDialog({
           }}
         >
           {publicKey ? (
-            showRetry ? (
-              <Box textAlign={"center"}>
-                <Typography>Payment verification failed</Typography>
-
-                <Box
-                  mt={"1rem"}
-                  sx={{
-                    display: "inline-block",
-                    "& button": {
-                      fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
-                      color: "#fff",
-                      background: "#000",
-                      textTransform: "capitalize",
-                      fontSize: "16px",
-                      border: "1px solid #E25822",
-                      height: "36px",
-                      width: "152px",
-                      fontWeight: "400",
-                      px: "1rem",
-                      borderRadius: "0",
-                      position: "relative",
-                      top: "-2px",
-                      right: "-2px",
-                      transition: "0.5s all",
-                    },
-
-                    "&:hover": {
-                      "& button": {
-                        top: "0",
-                        right: "0",
-                        background: "#000",
-                      },
-                    },
-                  }}
-                  className="btn_wrap"
-                >
-                  <Button onClick={() => retry()}>Retry</Button>
-                </Box>
-              </Box>
-            ) : poolCreated ? (
+             poolCreated ? (
               <Box textAlign={"center"}>
                 <Typography>Pool Created Successfully.</Typography>
 
@@ -516,6 +485,140 @@ export default function CreatePoolDialog({
       </Box> */}
             </Box>
           )}
+          {
+          showRetry && (
+            <Box sx={{position:"absolute", background: "white",  top: "5%" , left: "2%" , width: "480px" , height: "230px" , p: "10px"}}>
+            <Box textAlign={"center"} mt={"30px"} mb={"20px"}>
+                  <Typography>Payment verification failed</Typography>
+                  </Box>
+                  <Box>
+                  <Typography>
+                <strong>ID:</strong> {poolId}
+                </Typography>
+              {
+                txnHash != "" &&
+              <Typography>                
+              <strong>Txn Hash:</strong> <a href={`https://solscan.io/tx/${txnHash}?cluster=devnet`}> {txnHash}</a>
+              </Typography>
+              }
+              </Box>
+              {
+                 (poolId && txnHash  == "") ?
+                  <Box
+                  mt={"1rem"}
+                  sx={{
+                    display: "inline-block",
+                    "& button": {
+                      fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
+                      color: "#fff",
+                      background: "#000",
+                      textTransform: "capitalize",
+                      fontSize: "16px",
+                      border: "1px solid #E25822",
+                      height: "36px",
+                      width: "152px",
+                      fontWeight: "400",
+                      px: "1rem",
+                      borderRadius: "0",
+                      position: "relative",
+                      top: "-2px",
+                      right: "-2px",
+                      transition: "0.5s all",
+                    },
+
+                    "&:hover": {
+                      "& button": {
+                        top: "0",
+                        right: "0",
+                        background: "#000",
+                      },
+                    },
+                  }}
+                  className="btn_wrap"
+                >
+                  <Button
+                    sx={{
+                      "&.Mui-disabled": {
+                        cursor: "not-allowed !important",
+                        pointerEvents: "auto !important",
+                        color: "rgb(255 255 255 / 68%) !important",
+                      },
+                    }}
+                    disabled={joinPoolLoading}
+                    onClick={() => joinPool()}
+                  >
+                    Join Pool
+                    {joinPoolLoading && (
+                      <CircularProgress
+                        sx={{
+                          width: "15px !important",
+                          height: "15px !important",
+                          color: "#fff",
+                          ml: "10px",
+                        }}
+                      />
+                    )}
+                  </Button>
+                </Box>
+                  :
+                    (poolId && txnHash  != "") ?
+                  <Box
+                    mt={"1rem"}
+                    sx={{
+                      display: "inline-block",
+                      "& button": {
+                        fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
+                        color: "#fff",
+                        background: "#000",
+                        textTransform: "capitalize",
+                        fontSize: "16px",
+                        border: "1px solid #E25822",
+                        height: "36px", 
+                        fontWeight: "400",
+                        px: "1rem",
+                        borderRadius: "0",
+                        position: "relative",
+                        top: "-2px",
+                        right: "-2px",
+                        transition: "0.5s all",
+                      },
+  
+                      "&:hover": {
+                        "& button": {
+                          top: "0",
+                          right: "0",
+                          background: "#000",
+                        },
+                      },
+                    }}
+                    className="btn_wrap"
+                  >
+                    <Button onClick={() => retry()}>Retry</Button>
+  
+                  
+                  </Box>
+                  :
+                  <></>
+          }
+
+              <Box mt={"1rem"} sx={{ml:"10px", display: "inline-block",  width: "85px"}} className="btn_wrap">
+                      <Button
+                        sx={{
+                          "&.Mui-disabled": {
+                            cursor: "not-allowed !important",
+                            pointerEvents: "auto !important",
+                            color: "rgb(255 255 255 / 68%) !important",
+                          },
+                        }}
+                        disabled={createLoading||balErr!==""}
+                        onClick={() => close()}
+                      >Close</Button>
+                      </Box> 
+                </Box>
+                  
+            ) 
+          }
+         
         </Box>
       </DialogContent>
     </Dialog>

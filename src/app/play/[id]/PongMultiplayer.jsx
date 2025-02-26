@@ -238,7 +238,7 @@ return (
             }
             {
                 showButton &&
-                   <Box className="btn_wrap" sx={{margin: "10% auto",width:"auto",display:"inline-block"}}>
+                   <Box className="btn_wrap" sx={{margin: "10% 1% 0 0%",width:"auto",display:"inline-block"}}>
             <button style={{width: "auto"}}  onClick={() => startGame()}>
                 START GAME
             </button>    
