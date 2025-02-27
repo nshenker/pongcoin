@@ -66,8 +66,24 @@ const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
   }
 
   useEffect(() => { 
-    getData();
-  },[tabIndex,publicKey])
+    let interval: NodeJS.Timeout | null = null;
+  
+    if (tabIndex === 0) {
+      getData(); // Fetch data immediately
+      interval = setInterval(() => {
+        getData();
+      }, 2000);
+    } else {
+      getData();
+    }
+  
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [tabIndex, publicKey]);
+  
 
  
 
