@@ -86,6 +86,7 @@ export default function ConfirmationPopup({
         setLoading(false);
         setTxn(res.data.txnHash)
         setOpenSuccess(true)
+        
       }
     } catch (err) {
       setLoading(false);
@@ -190,7 +191,7 @@ export default function ConfirmationPopup({
           <Button onClick={() => setIsDialogOpen(false)}>No</Button>
         </Box>
       </DialogContent>
-      <Success isDialogOpen={openSuccess} setIsDialogOpen={setOpenSuccess} txn={txn}/>
+      <Success setMainDialog={setIsDialogOpen} isDialogOpen={openSuccess} setIsDialogOpen={setOpenSuccess} txn={txn}/>
     </Dialog>
   );
 }

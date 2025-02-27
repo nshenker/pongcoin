@@ -10,6 +10,7 @@ import {
   CircularProgress,
   TableCell,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
@@ -71,6 +72,7 @@ const PoolSingle = ({ row, tabIndex }) => {
   };
 
   const joinPool = async () => {
+
     if (row.deposit == "0") {
       return false;
     }
@@ -79,6 +81,7 @@ const PoolSingle = ({ row, tabIndex }) => {
       retry();
       return;
     }
+    setJoinPoolLoading(true);
 
     const senderPublicKey = new PublicKey(
       publicKey ? publicKey.toString() : ""
@@ -96,7 +99,6 @@ const PoolSingle = ({ row, tabIndex }) => {
     let signedTransaction = "";
 
     if (takeDeposit) {
-      setJoinPoolLoading(true);
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: senderPublicKey,
@@ -140,10 +142,14 @@ const PoolSingle = ({ row, tabIndex }) => {
         setJoinPoolLoading(false);
       }
     } catch (err) {
-      if (txnHash) {
+      if (err?.status == 401 && signedTransaction.toString()) {
         setShowRetry(true);
         setJoinPoolLoading(false);
       }
+    else{
+      setJoinPoolLoading(false);
+    }
+       
     }
   };
 
@@ -276,7 +282,139 @@ const PoolSingle = ({ row, tabIndex }) => {
           )}
         </TableCell>
       </TableRow>
+      {
+          showRetry && (
+            <Box sx={{position:"absolute", background: "white",  top: "5%" , left: "2%" , width: "480px" , height: "auto" , p: "10px"}}>
+            <Box textAlign={"center"} mt={"30px"} mb={"20px"}>
+                  <Typography>Payment verification failed</Typography>
+                  </Box>
+                  <Box>
+                  <Typography>
+                <strong>ID:</strong> {row._id}
+                </Typography>
+              {
+                txnHash != "" &&
+              <Typography>                
+              <strong>Txn Hash:</strong> <a href={`https://solscan.io/tx/${txnHash}?cluster=devnet`}> {txnHash}</a>
+              </Typography>
+              }
+              </Box>
+              {
+                 (poolId && txnHash  == "") ?
+                  <Box
+                  mt={"1rem"}
+                  sx={{
+                    display: "inline-block",
+                    "& button": {
+                      fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
+                      color: "#fff",
+                      background: "#000",
+                      textTransform: "capitalize",
+                      fontSize: "16px",
+                      border: "1px solid #E25822",
+                      height: "36px",
+                      width: "152px",
+                      fontWeight: "400",
+                      px: "1rem",
+                      borderRadius: "0",
+                      position: "relative",
+                      top: "-2px",
+                      right: "-2px",
+                      transition: "0.5s all",
+                    },
 
+                    "&:hover": {
+                      "& button": {
+                        top: "0",
+                        right: "0",
+                        background: "#000",
+                      },
+                    },
+                  }}
+                  className="btn_wrap"
+                >
+                  <Button
+                    sx={{
+                      "&.Mui-disabled": {
+                        cursor: "not-allowed !important",
+                        pointerEvents: "auto !important",
+                        color: "rgb(255 255 255 / 68%) !important",
+                      },
+                    }}
+                    disabled={joinPoolLoading}
+                    onClick={() => joinPool()}
+                  >
+                    Join Pool
+                    {joinPoolLoading && (
+                      <CircularProgress
+                        sx={{
+                          width: "15px !important",
+                          height: "15px !important",
+                          color: "#fff",
+                          ml: "10px",
+                        }}
+                      />
+                    )}
+                  </Button>
+                </Box>
+                  :
+                    (poolId && txnHash  != "") ?
+                  <Box
+                    mt={"1rem"}
+                    sx={{
+                      display: "inline-block",
+                      "& button": {
+                        fontFamily: `${IBM_Plex_Mono_Font.style.fontFamily}`,
+                        color: "#fff",
+                        background: "#000",
+                        textTransform: "capitalize",
+                        fontSize: "16px",
+                        border: "1px solid #E25822",
+                        height: "36px", 
+                        fontWeight: "400",
+                        px: "1rem",
+                        borderRadius: "0",
+                        position: "relative",
+                        top: "-2px",
+                        right: "-2px",
+                        transition: "0.5s all",
+                      },
+  
+                      "&:hover": {
+                        "& button": {
+                          top: "0",
+                          right: "0",
+                          background: "#000",
+                        },
+                      },
+                    }}
+                    className="btn_wrap"
+                  >
+                    <Button onClick={() => retry()}>Retry</Button>
+  
+                  
+                  </Box>
+                  :
+                  <></>
+          }
+
+              <Box mt={"1rem"} sx={{ml:"10px", display: "inline-block",  width: "85px"}} className="btn_wrap">
+                      <Button
+                        sx={{
+                          "&.Mui-disabled": {
+                            cursor: "not-allowed !important",
+                            pointerEvents: "auto !important",
+                            color: "rgb(255 255 255 / 68%) !important",
+                          },
+                        }}
+                        disabled={createLoading||balErr!==""}
+                        onClick={() => close()}
+                      >Close</Button>
+                      </Box> 
+                </Box>
+                  
+            ) 
+          }
       {/* Confirmation Popups */}
       {isDialogOpen && (
         <ConfirmationPopup

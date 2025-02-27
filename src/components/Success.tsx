@@ -56,6 +56,7 @@ function BootstrapDialogTitle(props: BootstrapDialogTitleProps) {
 export default function Success({
   isDialogOpen,
   setIsDialogOpen,
+  setMainDialog,
   txn
 }: any) {
   return (
@@ -91,7 +92,7 @@ export default function Success({
        
       }}
     >
-      <BootstrapDialogTitle onClose={() => setIsDialogOpen(false)}>
+      <BootstrapDialogTitle onClose={() => {setMainDialog(false),setIsDialogOpen(false)}}>
         Success
       </BootstrapDialogTitle>
       <DialogContent dividers>
@@ -135,7 +136,7 @@ export default function Success({
           onClick={() => window.open(`https://solscan.io/tx/${txn}`, "_blank")}
         
           >
-            View
+            View Txn
           </Button>
         </Box>
       </DialogContent>

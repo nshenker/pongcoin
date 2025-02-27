@@ -487,7 +487,7 @@ export default function CreatePoolDialog({
           )}
           {
           showRetry && (
-            <Box sx={{position:"absolute", background: "white",  top: "5%" , left: "2%" , width: "480px" , height: "230px" , p: "10px"}}>
+            <Box sx={{position:"absolute", background: "white",  top: "5%" , left: "2%" , width: "480px" , height: "auto" , p: "10px"}}>
             <Box textAlign={"center"} mt={"30px"} mb={"20px"}>
                   <Typography>Payment verification failed</Typography>
                   </Box>
