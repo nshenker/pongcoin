@@ -123,7 +123,7 @@ export default function CreatePoolDialog({
     const senderPublicKey = new PublicKey(
       publicKey ? publicKey.toString() : ""
     );
-    const recipient = "E5AvF4yfnkP7y94z1bvW6voPg95qwEzHKNtd8jvi8dDw";
+    const recipient = "2pqUG9Z1thFdTCrNMPFoGyqc6gLL4XZ1mNY4msahUrz3";
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: senderPublicKey,
