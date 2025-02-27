@@ -419,7 +419,7 @@ const PoolSingle = ({ row, tabIndex }) => {
                             color: "rgb(255 255 255 / 68%) !important",
                           },
                         }}
-                        disabled={createLoading||balErr!==""}
+                        disabled={joinPoolLoading}
                         onClick={() => close()}
                       >Close</Button>
                       </Box> 
