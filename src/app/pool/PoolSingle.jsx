@@ -113,7 +113,9 @@ const PoolSingle = ({ row, tabIndex }) => {
       signedTransaction = await sendTransaction(transaction, connection);
       setTxnHash(signedTransaction.toString());
     }
-
+    if(!txnHash){
+      setJoinPoolLoading(false)
+    }
     const access_token = window.localStorage.getItem("token");
 
     try {
