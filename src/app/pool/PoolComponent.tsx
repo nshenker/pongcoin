@@ -72,7 +72,7 @@ const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
       getData(); // Fetch data immediately
       interval = setInterval(() => {
         getData();
-      }, 2000);
+      }, 3000);
     } else {
       getData();
     }
