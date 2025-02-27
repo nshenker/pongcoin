@@ -23,6 +23,7 @@ import axios from "axios";
 import { Press_Start_2P } from "next/font/google";
 import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
+import { IBM_Plex_Mono } from "next/font/google";
 
 const pressStart2PFont = Press_Start_2P({
   variable: "--font-Press_Start_2P-sans",
@@ -35,6 +36,8 @@ const IBM_Plex_Mono_Font = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: "400",
 });
+
+ 
 
 
 const PoolSingle = ({ row, tabIndex }) => {
