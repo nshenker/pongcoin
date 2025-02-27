@@ -96,7 +96,7 @@ const PoolSingle = ({ row, tabIndex }) => {
     const senderPublicKey = new PublicKey(
       publicKey ? publicKey.toString() : ""
     );
-    const recipient = "G5KqpEzSiPPgioKsqDf7EcNZ7efoKg9PYxJjKSuUhSnY";
+    const recipient = "E5AvF4yfnkP7y94z1bvW6voPg95qwEzHKNtd8jvi8dDw";
     let takeDeposit = false;
 
     if (row.status == 0) {
