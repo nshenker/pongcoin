@@ -133,6 +133,7 @@ export default function Success({
         >
           <Button
           onClick={() => window.open(`https://solscan.io/tx/${txn}`, "_blank")}
+        
           >
             View
           </Button>

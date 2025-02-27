@@ -1,8 +1,16 @@
 "use client";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import WalletConnectButton from "@/components/WalletConnectButton";
+import { ContractContext } from "@/contexts/ContractContext";
 import { API_URL } from "@/utils/config";
-import { Box, Button, CircularProgress, TableCell, TableRow } from "@mui/material";
+import { timeAgo } from "@/utils/functions";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TableCell,
+  TableRow,
+} from "@mui/material";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   Keypair,
@@ -13,7 +21,7 @@ import {
 import axios from "axios";
 import { Press_Start_2P } from "next/font/google";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 const pressStart2PFont = Press_Start_2P({
   variable: "--font-Press_Start_2P-sans",
@@ -21,17 +29,18 @@ const pressStart2PFont = Press_Start_2P({
   weight: "400",
 });
 
-const PoolSingle = ({ row, tabIndex,user }) => {
-  
+const PoolSingle = ({ row, tabIndex }) => {
+  const { user } = useContext(ContractContext);
   // const [user, setUser] = useState({});
+  const [txnHash, setTxnHash] = useState("");
   const [creator, setCreator] = useState({});
   const [opponent, setOpponent] = useState({});
+  const [rowVisible, setRowVisible] = useState(false);
   const { connection } = useConnection();
   const { wallet } = useWallet();
   const { publicKey, sendTransaction } = useWallet();
   const [joinPoolLoading, setJoinPoolLoading] = useState(false);
   const [showRetry, setShowRetry] = useState(false);
-  const [txnHash, setTxnHash] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -61,11 +70,7 @@ const PoolSingle = ({ row, tabIndex,user }) => {
     } catch (err) {}
   };
 
- 
-
   const joinPool = async () => {
-    
-    setJoinPoolLoading(true)
     if (row.deposit == "0") {
       return false;
     }
@@ -82,8 +87,8 @@ const PoolSingle = ({ row, tabIndex,user }) => {
     let takeDeposit = false;
 
     if (row.status == 0) {
-      if (!row.opponentJoined || !row.creatorJoined) {
-        if (!row.opponentJoined && row.creator != user._id) {
+      if (!row?.opponentJoined || !row?.creatorJoined) {
+        if (!row?.opponentJoined && row?.creator != user?._id) {
           takeDeposit = true;
         }
       }
@@ -91,6 +96,7 @@ const PoolSingle = ({ row, tabIndex,user }) => {
     let signedTransaction = "";
 
     if (takeDeposit) {
+      setJoinPoolLoading(true);
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: senderPublicKey,
@@ -104,45 +110,41 @@ const PoolSingle = ({ row, tabIndex,user }) => {
         await connection.getLatestBlockhash()
       ).blockhash;
 
-       signedTransaction = await sendTransaction(transaction, connection);
-      // alert(signedTransaction.toString())
+      signedTransaction = await sendTransaction(transaction, connection);
       setTxnHash(signedTransaction.toString());
     }
 
-    setTimeout(async () => {
-      const access_token = window.localStorage.getItem("token");
+    const access_token = window.localStorage.getItem("token");
 
-      try {
-        const res = await axios.post(
-          `${API_URL}/join/pool`,
-          {
-            poolId: row._id,
-            txnHash: signedTransaction.toString(),
+    try {
+      const res = await axios.post(
+        `${API_URL}/join/pool`,
+        {
+          poolId: row._id,
+          txnHash: signedTransaction.toString(),
+        },
+        {
+          headers: {
+            "x-access-token": access_token,
           },
-          {
-            headers: {
-              "x-access-token": access_token,
-            },
-          }
-        );
-  
-        if (res.status === 200) {
-          setJoinPoolLoading(false)
-          window.localStorage.setItem("gameToken", res.data.gameToken);
-          window.location.href = `/play/${res.data.gameToken}`;
         }
-        if (res.status === 401) {
-          setShowRetry(true);
-          setJoinPoolLoading(false)
-        }
-      } catch (err) {
-        if (txnHash) {
-          setShowRetry(true);
-          setJoinPoolLoading(false)
-        }
+      );
+
+      if (res.status === 200) {
+        setJoinPoolLoading(false);
+        window.localStorage.setItem("gameToken", res.data.gameToken);
+        window.location.href = `/play/${res.data.gameToken}`;
       }
-    }, 3000);
-   
+      if (res.status === 401) {
+        setShowRetry(true);
+        setJoinPoolLoading(false);
+      }
+    } catch (err) {
+      if (txnHash) {
+        setShowRetry(true);
+        setJoinPoolLoading(false);
+      }
+    }
   };
 
   const retry = async () => {
@@ -177,35 +179,93 @@ const PoolSingle = ({ row, tabIndex,user }) => {
   };
 
   useEffect(() => {
-    if (row?.creator!==undefined) {
+    if (row?.creator || row?.opponent) {
       getUser();
     }
-  }, [row?.creator]);
+  }, [row.creator, row?.opponent]);
 
+  // console.log(row.creator,row?.opponent);
 
+  // useEffect(() => {
+  //   let isVisible = false;
+  //   // debugger
 
+  //   if (tabIndex === 0) {
+  //     isVisible = row?.creatorJoined && row?.online;
+  //   } else if (tabIndex === 1) {
+  //     isVisible =
+  //       (row?.creatorJoined && creator?._id === user?._id) ||
+  //       (row?.opponentJoined && opponent?._id === user?._id);
+  //   } else {
+  //     isVisible = creator?._id === user?._id || opponent?._id === user?._id;
+  //   }
+
+  //   setRowVisible(isVisible);
+  // }, [tabIndex, row, creator, user, opponent]);
 
   return (
     <>
-
-
-    {tabIndex === 0 && row?.creatorJoined && row?.online && row?.status == 0 ? (
       <TableRow key={row._id}>
         <TableCell>{row._id}</TableCell>
-        <TableCell>{creator.username}</TableCell>
-        <TableCell>{row.deposit} SOL</TableCell>
-        <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
-        <TableCell>
+        {tabIndex===2?
+        <TableCell>{(creator?.username&&opponent?.username)?`${creator?.username} / ${opponent?.username}`:"Fetching.."}</TableCell>
+        :
+        <TableCell>{creator?.username?creator?.username:"Fetching.."}</TableCell>}
+        <TableCell>{row?.deposit} SOL</TableCell>
+        <TableCell>{timeAgo(row?.createdAt)}</TableCell>
+        <TableCell sx={{
+          // whiteSpace:"nowrap"
+        }}>
           {publicKey ? (
             <Box sx={{ justifyContent: "start", display: "flex", gap: "1rem" }}>
               <Box className="btn_wrap" onClick={() => joinPool()}>
-                <Button>
-                  {publicKey ? (showRetry ? "Retry" : "Join") : "Connect Wallet"}
-                </Button>
+                {(tabIndex == 0 ||tabIndex == 1 )&& 
+                    <Button
+                      sx={{
+                        "&.Mui-disabled": {
+                          cursor: "not-allowed !important",
+                          pointerEvents: "auto !important",
+                          color: "rgb(255 255 255 / 68%) !important",
+                        },
+                      }}
+                      disabled={joinPoolLoading}
+                    >
+                      {publicKey
+                        ? showRetry
+                          ? "Retry"
+                          : tabIndex == 1
+                          ? "Resume"
+                          : "Join"
+                        : "Connect Wallet"}
+                      {joinPoolLoading && (
+                        <CircularProgress
+                          sx={{
+                            width: "15px !important",
+                            height: "15px !important",
+                            color: "#fff",
+                            ml: "10px",
+                          }}
+                        />
+                      )}
+                    </Button>
+                  }
               </Box>
-              {!row?.gameStarted && ((row?.creator == user.id) || (row?.opponentJoined && row?.opponent == user.id))  && (
+              {tabIndex == 1 && (
                 <Box className="btn_wrap" onClick={() => setIsDialogOpen(true)}>
                   <Button>Leave</Button>
+                </Box>
+              )}
+              {tabIndex == 2 && (
+                <Box
+                  className="btn_wrap"
+                  onClick={() =>
+                    window.open(
+                      `https://solscan.io/tx/${row?.winnerRewardedHash}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  <Button>View Txn</Button>
                 </Box>
               )}
             </Box>
@@ -216,88 +276,16 @@ const PoolSingle = ({ row, tabIndex,user }) => {
           )}
         </TableCell>
       </TableRow>
-    ) : tabIndex === 1 &&
-      ((row?.creatorJoined && creator._id == user?._id) ||
-        (row?.opponentJoined && opponent?._id == user?._id)) ? (
-      <TableRow key={row._id}>
-        <TableCell>{row._id}</TableCell>
-        <TableCell>{creator.username}</TableCell>
-        <TableCell>{row.deposit} SOL</TableCell>
-        <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
-        <TableCell>
-          {publicKey ? (
-            <Box sx={{ justifyContent: "start", display: "flex", gap: "1rem" }}>
-              <Box className="btn_wrap" onClick={() => joinPool()}>
-                <Button   sx={{
-                      "&.Mui-disabled": {
-                        cursor: "not-allowed !important",
-                        pointerEvents: "auto !important",
-                        color: "rgb(255 255 255 / 68%) !important",
-                      },
-                    }}
-                    disabled={joinPoolLoading}>
-                  {publicKey ? (showRetry ? "Retry" : "Join") : "Connect Wallet"}
-                    {joinPoolLoading && (
-                                        <CircularProgress
-                                          sx={{
-                                            width: "15px !important",
-                                            height: "15px !important",
-                                            color: "#fff",
-                                            ml: "10px",
-                                          }}
-                                        />
-                                      )}
-                </Button>
-              </Box>
-              {!row?.gameStarted && (
-                <Box className="btn_wrap" onClick={() => setIsDialogOpen(true)}>
-                  <Button>Leave</Button>
-                </Box>
-              )}
-            </Box>
-          ) : (
-            <Box className="btn_wrap" sx={{ display: "inline-block" }}>
-              <WalletConnectButton />
-            </Box>
-          )}
-        </TableCell>
-      </TableRow>
-    ) : tabIndex === 2 &&
-      ((creator._id == user?._id) || (opponent?._id == user?._id)) ? (
-      <TableRow key={row._id}>
-        <TableCell>{row._id}</TableCell>
-        <TableCell>{creator.username}</TableCell>
-        <TableCell>{row.deposit} SOL</TableCell>
-        <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
-        <TableCell>
-          {publicKey ? (
-            <Box sx={{ justifyContent: "start", display: "flex", gap: "1rem" }}>
-              <Box className="btn_wrap" onClick={() => joinPool()}>
-                <Button>
-                  {row?.winnerRewardedHash && <a href={`https://explorer.solana.com/tx/${row?.winnerRewardedHash}?cluster=devnet`} target="_blank" >View Txn</a> }
-                </Button>
-              </Box>
-               
-            </Box>
-          ) : (
-            <Box className="btn_wrap" sx={{ display: "inline-block" }}>
-              <WalletConnectButton />
-            </Box>
-          )}
-        </TableCell>
-      </TableRow>
-    ) : null}
-  
-    {/* Confirmation Popups */}
-    {isDialogOpen && (
-      <ConfirmationPopup
-        isDialogOpen={isDialogOpen}
-        setIsDialogOpen={setIsDialogOpen}
-        poolId={row?._id}
-      />
-    )}
 
-  </>
+      {/* Confirmation Popups */}
+      {isDialogOpen && (
+        <ConfirmationPopup
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+          poolId={row?._id}
+        />
+      )}
+    </>
   );
 };
 

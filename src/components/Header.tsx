@@ -61,6 +61,10 @@ const Header = () => {
       setSolBalance("0");
       setTokenBalance(0);
       setOpen(false);
+      // localStorage.removeItem("token")
+      // if(typeof window !== "undefined"){
+      //   window.location.reload()
+      // }
       console.log("Wallet disconnected");
     } catch (error) {
       console.error("Error disconnecting wallet:", error);
