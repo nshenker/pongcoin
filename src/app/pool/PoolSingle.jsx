@@ -30,6 +30,13 @@ const pressStart2PFont = Press_Start_2P({
   weight: "400",
 });
 
+const IBM_Plex_Mono_Font = IBM_Plex_Mono({
+  variable: "--font-IBM_Plex_Mono-sans",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+
 const PoolSingle = ({ row, tabIndex }) => {
   const { user } = useContext(ContractContext);
   // const [user, setUser] = useState({});
