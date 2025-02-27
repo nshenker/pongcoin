@@ -241,7 +241,7 @@ return (
             {
                 showLink &&
                 
-                <a  style={{textAlign: "center", color: "blue", fontSize: "14px"}} target="_blank" href={`https://explorer.solana.com/tx/${showLink}?cluster=devnet`}>View Transaction</a> 
+                <a  style={{textAlign: "center", color: "blue", fontSize: "14px"}} target="_blank" href={`https://solscan.io/tx/${showLink}`}>View Transaction</a> 
             }
             </>
             }
