@@ -26,7 +26,7 @@ export function WalletConnectProvider({ children }: ComponentProps) {
   const network =
     process.env.NEXT_PUBLIC_NETWORK === "mainnet-beta"
       ? WalletAdapterNetwork.Mainnet
-      : WalletAdapterNetwork.Mainnet;
+      : WalletAdapterNetwork.Devnet;
 
   const endpoint = useMemo(() => {
     if (process.env.NEXT_PUBLIC_HELIUS_RPC_URL) return process.env.NEXT_PUBLIC_HELIUS_RPC_URL;
