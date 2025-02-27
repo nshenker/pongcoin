@@ -82,9 +82,9 @@ export default function ConfirmationPopup({
         }
       );
 
-      if (res.status === 201) {
+      if (res.status === 200) {
         setLoading(false);
-        setTxn("")
+        setTxn(res.data.txnHash)
         setOpenSuccess(true)
       }
     } catch (err) {

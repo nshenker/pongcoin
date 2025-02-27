@@ -9,11 +9,13 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Typography,
 } from "@mui/material";
 import { IBM_Plex_Mono } from "next/font/google";
 import PoolSingle from "./PoolSingle";
 import axios from "axios";
 import { API_URL } from "@/utils/config";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 
 
@@ -26,49 +28,36 @@ interface PoolComponentProps {
   tabIndex: number;
 }
 const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
-  const [user, setUser] = useState({});
-  const getMe = async () => {
-    const access_token = window.localStorage.getItem("token");
-
-    try {
-      const res = await axios.get(`${API_URL}/get/me`, {
-        headers: {
-          "x-access-token": access_token,
-        },
-      });
-
-      if (res.status === 200) {
-        setUser(res.data.data);
-      }
-    } catch (err) {}
-  };
  
-
+   const { publicKey,disconnect } = useWallet();
+    const { connection } = useConnection();
   const [data,setData] = useState([]);
 
   const getData = async () => {
     
     const access_token = localStorage.getItem("token")
-    
+    const endpoint = tabIndex === 0 ? "live" : tabIndex === 1 ? "play" : "history";
+    const url = `${API_URL}/get/pools/${endpoint}${access_token ? `?token=${access_token}` : ""}`;
+
     try {
-      const res = await axios.get(`${API_URL}/get/pools`);
+      const res = await axios.get(url);
 
       if (res.status === 200) {        
         const fetchedData = res.data.data;
 
-        // Apply filtering based only on status
-        const filteredData = fetchedData.filter((item:any) => {
-          if (tabIndex === 0) {
-            return item.status === 0; // "Live" tab - status 0
-          } else if (tabIndex === 1) {
-            return item.status !== 2; // "Play" tab - status NOT 2
-          } else if (tabIndex === 2) {
-            return item.status === 2; // "History" tab - status 2
-          }
-          return false;
-        });
+        // // Apply filtering based only on status
+        // const filteredData = fetchedData.filter((item:any) => {
+        //   if (tabIndex === 0) {
+        //     return item.status === 0; // "Live" tab - status 0
+        //   } else if (tabIndex === 1) {
+        //     return item.status !== 2; // "Play" tab - status NOT 2
+        //   } else if (tabIndex === 2) {
+        //     return item.status === 2; // "History" tab - status 2
+        //   }
+        //   return false;
+        // });
   
-        setData(filteredData);
+        setData(fetchedData);
       }
   
     } catch (err) {
@@ -76,18 +65,27 @@ const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
     }
   }
 
-  useEffect(() => {
-    // getData();  
-    getMe();
-    getData();
+  useEffect(() => { 
+    let interval: NodeJS.Timeout | null = null;
+  
+    if (tabIndex === 0) {
+      getData(); // Fetch data immediately
+      interval = setInterval(() => {
+        getData();
+      }, 2000);
+    } else {
+      getData();
+    }
+  
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [tabIndex, publicKey]);
+  
 
-    setInterval(() => {
-    },30000)
-  },[])
-
-  // useEffect(() => {
-  //   // setData([])
-  // },[tabIndex])
+ 
 
   return (
     <TableContainer
@@ -106,6 +104,7 @@ const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
         },
         "& td": {
           fontSize: "12px",
+          whiteSpace:"nowrap"
         },
         "& th": {
           fontSize: "13px",
@@ -154,22 +153,37 @@ const PoolComponent: React.FC<PoolComponentProps>= ({tabIndex}) => {
             sx={{
               "& th,td": {
                 fontWeight: "bold",
+                
               },
             }}
           >
             <TableCell>ID</TableCell>
-            <TableCell>Created By</TableCell>
+            <TableCell>{tabIndex===2?"Players":"Created By"}</TableCell>
             <TableCell>Amount</TableCell>
-            <TableCell>Created on</TableCell>
+            <TableCell>Ago</TableCell>
             <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data?.map((row,index) => (
-            <PoolSingle row={row} key={index} tabIndex={tabIndex} user={user}/>
+            <PoolSingle row={row} key={index} tabIndex={tabIndex} />
           ))}
         </TableBody>
       </Table>
+      {
+        data?.length==0 &&
+        <Typography
+        sx={{
+          fontSize: "16px",
+          fontFamily: IBM_Plex_Mono_Font.style.fontFamily,
+          textAlign: "center",
+          fontWeight:"600",
+          pt:"3rem"
+        }}
+      >
+       Not Found.
+      </Typography>
+      }
     </TableContainer>
   );
 };
