@@ -86,7 +86,7 @@ const PoolSingle = ({ row, tabIndex }) => {
     const senderPublicKey = new PublicKey(
       publicKey ? publicKey.toString() : ""
     );
-    const recipient = "E5AvF4yfnkP7y94z1bvW6voPg95qwEzHKNtd8jvi8dDw";
+    const recipient = "G5KqpEzSiPPgioKsqDf7EcNZ7efoKg9PYxJjKSuUhSnY";
     let takeDeposit = false;
 
     if (row.status == 0) {
@@ -302,7 +302,7 @@ const PoolSingle = ({ row, tabIndex }) => {
               }
               </Box>
               {
-                 (poolId && txnHash  == "") ?
+                 (row._id && txnHash  == "") ?
                   <Box
                   mt={"1rem"}
                   sx={{
@@ -360,7 +360,7 @@ const PoolSingle = ({ row, tabIndex }) => {
                   </Button>
                 </Box>
                   :
-                    (poolId && txnHash  != "") ?
+                    (row._id && txnHash  != "") ?
                   <Box
                     mt={"1rem"}
                     sx={{
